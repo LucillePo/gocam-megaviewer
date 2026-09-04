@@ -4464,28 +4464,40 @@ async function runQC(nodes, loaded){
     pairs.forEach(p=>{ const idk=asp[p.aspect][0]; terms.add(p.A[idk]); terms.add(p.B[idk]); });
     await ancestorsOf([...terms]);
     const hits=[];
+    const names=ms=>ms.map(m=>(CACHE[m]&&CACHE[m].title)||m).join(", ");
     pairs.forEach(p=>{
       const [idk,lblk]=asp[p.aspect];
-      const s=subsumption(p.A[idk], p.B[idk]); if(!s) return;
       const A=p.A, B=p.B;
-      const specNode=(A[idk]===s.specific)?A:B, genNode=(A[idk]===s.specific)?B:A;
-      const names=ms=>ms.map(m=>(CACHE[m]&&CACHE[m].title)||m).join(", ");
-      hits.push({aspect:p.aspect, gp:A.gp||A.gp_id,
-        gen:{id:s.general, label:genNode[lblk]||s.general, models:names(genNode.models), node:genNode.id},
-        spec:{id:s.specific, label:specNode[lblk]||s.specific, models:names(specNode.models), node:specNode.id}});
+      const s=subsumption(A[idk], B[idk]);   // null if the two terms are not parent/child
+      if(s){
+        const specNode=(A[idk]===s.specific)?A:B, genNode=(A[idk]===s.specific)?B:A;
+        hits.push({kind:"precision", aspect:p.aspect, gp:A.gp||A.gp_id,
+          x:{id:s.general,  term:genNode[lblk]||s.general,  models:names(genNode.models), node:genNode.id},
+          y:{id:s.specific, term:specNode[lblk]||s.specific, models:names(specNode.models), node:specNode.id}});
+      } else {
+        hits.push({kind:"different", aspect:p.aspect, gp:A.gp||A.gp_id,
+          x:{id:A[idk], term:A[lblk]||A[idk], models:names(A.models), node:A.id},
+          y:{id:B[idk], term:B[lblk]||B[idk], models:names(B.models), node:B.id}});
+      }
     });
     cnt.textContent="("+hits.length+")";
-    if(!hits.length){ box.innerHTML=caveat+"No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
+    if(!hits.length){ box.innerHTML=caveat+"No same-protein annotation mismatches found (checked "+pairs.length+" pair(s))."; return; }
     const q=id=>'<a href="https://www.ebi.ac.uk/QuickGO/term/'+id+'" target="_blank" rel="noopener">'+id+'</a>';
-    box.innerHTML = caveat + hits.map(h=>
-      '<div class="qcitem" data-a="'+h.gen.node+'" data-b="'+h.spec.node+'" title="click to highlight both units in the graph" '
-      +'style="cursor:pointer;border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
-      +'&#9888; <b>'+h.gp+'</b> — '+h.aspect+' precision mismatch (units did not merge):<br>'
-      +'general: '+q(h.gen.id)+' &ldquo;'+h.gen.label+'&rdquo;<br>'
-      +'specific: '+q(h.spec.id)+' &ldquo;'+h.spec.label+'&rdquo;<br>'
-      +'<span class="sub">models &mdash; general: '+h.gen.models+'; specific: '+h.spec.models+'</span>'
-      +'<span class="sub"> &middot; click to highlight in graph</span>'
-      +'</div>').join("");
+    box.innerHTML = caveat + hits.map(h=>{
+      const prec=h.kind==="precision";
+      const border=prec?"#e0a800":"#c0392b", bg=prec?"#fff8e6":"#fdecea";
+      const head=prec ? (h.aspect+" precision mismatch (parent/child)")
+                      : (h.aspect+" differs &mdash; not parent/child; check for inconsistency/error");
+      const xl=prec?"general: ":"", yl=prec?"specific: ":"vs ";
+      return '<div class="qcitem" data-a="'+h.x.node+'" data-b="'+h.y.node+'" title="click to highlight both units in the graph" '
+        +'style="cursor:pointer;border-left:3px solid '+border+';background:'+bg+';padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
+        +'&#9888; <b>'+h.gp+'</b> &mdash; '+head+' (units did not merge):<br>'
+        +xl+q(h.x.id)+' &ldquo;'+h.x.term+'&rdquo;<br>'
+        +yl+q(h.y.id)+' &ldquo;'+h.y.term+'&rdquo;<br>'
+        +'<span class="sub">models &mdash; '+h.x.models+'  |  '+h.y.models+'</span>'
+        +'<span class="sub"> &middot; click to highlight</span>'
+        +'</div>';
+    }).join("");
     box.querySelectorAll(".qcitem").forEach(el=>{
       el.addEventListener("click",e=>{ if(e.target.tagName==="A") return; qcHighlight([el.dataset.a, el.dataset.b]); });
     });
