@@ -3953,7 +3953,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <div><span class="dot" style="background:#a8d5ff;border-color:#5a9bd8"></span> single model</div>
       <div><span class="dot" style="background:#c9b3ff;border-color:#7a5bd8"></span> protein complex</div>
     </div>
-    <div id="cats">
+    <div id="cats" style="display:none">
       <h2>Colours</h2>
       <div class="row">default scheme:
         <select id="colorBy">
@@ -4092,11 +4092,12 @@ function normId(s){ s=(s||"").trim(); if(!s) return ""; return s.startsWith("gom
 const short = s => { s=s||""; return s.length>26 ? s.slice(0,25)+"…" : s; };
 
 // --- render the "loaded models" panel ---
-function renderCacheList(){
-  document.getElementById("ncache").textContent = "("+Object.keys(CACHE).length+")";
+function renderCacheList(ids){
+  ids = ids || [];
+  document.getElementById("ncache").textContent = "("+ids.length+")";
   const el = document.getElementById("cachelist");
-  el.innerHTML = Object.values(CACHE).sort((a,b)=>a.id.localeCompare(b.id)).map(m=>
-    `<div class="row"><span class="dot" style="width:9px;height:9px;border:none;background:${MCOL[m.id]}"></span> `+
+  el.innerHTML = ids.slice().sort((a,b)=>a.localeCompare(b)).map(id=>CACHE[id]).filter(Boolean).map(m=>
+    `<div class="row"><span class="dot" style="width:9px;height:9px;border:none;background:${MCOL[m.id]||'#c9c9c9'}"></span> `+
     `<span class="mono">${m.id.split(':')[1]}</span> ${m.title.replace(/_.*/,'')}`+
     (m._src==="api"?` <span class="sub" title="fetched from the GO production API — may lag live Noctua">&#9432; snapshot</span>`:``)+
     `</div>`).join("");
@@ -4498,7 +4499,7 @@ async function doBuild(){
       if(_q) _q.innerHTML="Build a graph to run QC checks."; if(_n) _n.textContent=""; }
     const nl=document.getElementById("notloaded");
     const ids=currentIds();
-    if(!ids.length){ nl.innerHTML=""; if(cy){ cy.elements().remove(); } return; }
+    if(!ids.length){ nl.innerHTML=""; renderCacheList([]); { const _c=document.getElementById("cats"); if(_c) _c.style.display="none"; } if(cy){ cy.elements().remove(); } return; }
     const need=ids.filter(id=>!CACHE[id]);
     if(need.length){
       nl.style.color="#555"; nl.innerHTML="Fetching "+need.length+" model(s) from GO…";
@@ -4515,6 +4516,8 @@ async function doBuild(){
     const showMols=document.getElementById("showMols").checked;
     const g=buildGraph(loaded,currentMode(),showMols);
     render(g,loaded);
+    renderCacheList(loaded);
+    { const _c=document.getElementById("cats"); if(_c) _c.style.display=""; }
     if(cy){ cy.resize(); cy.fit(null,40); }  // guard against zero-size container at init
     runQC(g.nodes, loaded);   // QC only on live-sourced data; skips snapshot-fetched models
   }catch(e){ showErr((e&&e.stack)||String(e)); }
@@ -4648,7 +4651,7 @@ makeResizer("rzR","side","right");
 
 document.getElementById("colorBy").value = colorBy;   // reflect baked-in default scheme
 renderPalette();
-renderCacheList();
+renderCacheList([]);
 
 // --- shareable links: read model IDs from the URL (?ids=a,b,c) and build; and a Copy-link button ---
 function shareURL(){
