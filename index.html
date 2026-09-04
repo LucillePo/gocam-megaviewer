@@ -4000,8 +4000,8 @@ let colorBy = "bridge";  // default scheme: "bridge" (bridge/single) | "model"
 function lsGet(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch(e){ return d; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 const DEFAULT_STATE = {};     // baked-in layout/colours/scheme (from layout.json)
-let OVERRIDE = lsGet("gocam-colors", DEFAULT_STATE.colors || {});   // unit sig -> "#rrggbb" (wins over the default scheme)
-let PALETTE  = lsGet("gocam-palette", DEFAULT_STATE.palette || []); // reusable custom colours
+let OVERRIDE = Object.assign({}, DEFAULT_STATE.colors || {});   // start clean each session (no localStorage auto-load)
+let PALETTE  = (DEFAULT_STATE.palette || []).slice();           // "My colours" — blank unless added this session
 let selectedSig = null;                       // sig of the currently clicked unit
 if(DEFAULT_STATE.scheme) colorBy = DEFAULT_STATE.scheme;
 
