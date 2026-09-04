@@ -3918,6 +3918,8 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
     <h2>Loaded models <span class="sub" id="ncache"></span></h2>
     <div id="cachelist" class="sub"></div>
     <div class="warn" id="notloaded"></div>
+    <h2>Quality control <span class="sub" id="nqc"></span></h2>
+    <div id="qc" class="sub">Build a graph to run QC checks.</div>
   </div></div>
 
   <div class="resizer" id="rzL"></div>
@@ -4402,6 +4404,74 @@ async function fetchModel(id){
   }catch(e){ return {id,ok:false,error:(e&&e.message)||String(e)}; }
 }
 
+// ---- QC: flag same-protein units that fail to merge only because one GO term
+//      is a parent/child (ancestor/descendant) of the other ----
+const _ancCache={};   // GO id -> Set(ancestor ids), memoised
+async function ancestorsOf(ids){
+  const need=ids.filter(id=>/^GO:/.test(id) && !(id in _ancCache));
+  for(let i=0;i<need.length;i+=20){
+    const chunk=need.slice(i,i+20);
+    try{
+      const r=await fetch("https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/"+chunk.join(",")+"/ancestors?relations=is_a,part_of",{headers:{Accept:"application/json"}});
+      if(r.ok){ const d=await r.json(); (d.results||[]).forEach(t=>{ _ancCache[t.id]=new Set(t.ancestors||[]); }); }
+    }catch(e){}
+    chunk.forEach(id=>{ if(!(id in _ancCache)) _ancCache[id]=new Set(); });  // don't refetch failures
+  }
+}
+function subsumption(t1,t2){   // null, or which term is the more specific one
+  if(!t1||!t2||t1===t2) return null;
+  const a1=_ancCache[t1]||new Set(), a2=_ancCache[t2]||new Set();
+  if(a2.has(t1)) return {general:t1, specific:t2};
+  if(a1.has(t2)) return {general:t2, specific:t1};
+  return null;
+}
+async function runQC(nodes){
+  const box=document.getElementById("qc"), cnt=document.getElementById("nqc");
+  if(!box) return;
+  try{
+    box.innerHTML="checking annotations…"; cnt.textContent="";
+    const asp={MF:["mf_id","mf"], BP:["bp_id","bp"], CC:["cc_id","cc"]};
+    const byGp={};
+    nodes.forEach(n=>{ if(n.gp_id) (byGp[n.gp_id]=byGp[n.gp_id]||[]).push(n); });
+    const pairs=[];
+    Object.values(byGp).forEach(g=>{
+      for(let i=0;i<g.length;i++) for(let j=i+1;j<g.length;j++){
+        const A=g[i], B=g[j], d=[];
+        if(A.mf_id!==B.mf_id) d.push("MF");
+        if(A.bp_id!==B.bp_id) d.push("BP");
+        if(A.cc_id!==B.cc_id) d.push("CC");
+        const cxDiff = A.is_complex!==B.is_complex || (A.complex_parts||[]).join()!==(B.complex_parts||[]).join();
+        if(d.length===1 && !cxDiff) pairs.push({A,B,aspect:d[0]});
+      }
+    });
+    if(!pairs.length){ box.innerHTML="No same-protein near-miss pairs to check."; cnt.textContent="(0)"; return; }
+    const terms=new Set();
+    pairs.forEach(p=>{ const idk=asp[p.aspect][0]; terms.add(p.A[idk]); terms.add(p.B[idk]); });
+    await ancestorsOf([...terms]);
+    const hits=[];
+    pairs.forEach(p=>{
+      const [idk,lblk]=asp[p.aspect];
+      const s=subsumption(p.A[idk], p.B[idk]); if(!s) return;
+      const A=p.A, B=p.B;
+      const spec=(A[idk]===s.specific)?A:B, gen=(A[idk]===s.specific)?B:A;
+      const names=ms=>ms.map(m=>(CACHE[m]&&CACHE[m].title)||m).join(", ");
+      hits.push({aspect:p.aspect, gp:A.gp||A.gp_id,
+        gen:{id:s.general, label:gen[lblk]||s.general, models:names(gen.models)},
+        spec:{id:s.specific, label:spec[lblk]||s.specific, models:names(spec.models)}});
+    });
+    cnt.textContent="("+hits.length+")";
+    if(!hits.length){ box.innerHTML="No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
+    const q=id=>'<a href="https://www.ebi.ac.uk/QuickGO/term/'+id+'" target="_blank" rel="noopener">'+id+'</a>';
+    box.innerHTML = hits.map(h=>
+      '<div style="border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
+      +'&#9888; <b>'+h.gp+'</b> — '+h.aspect+' precision mismatch (units did not merge):<br>'
+      +'general: '+q(h.gen.id)+' &ldquo;'+h.gen.label+'&rdquo;<br>'
+      +'specific: '+q(h.spec.id)+' &ldquo;'+h.spec.label+'&rdquo;<br>'
+      +'<span class="sub">models &mdash; general: '+h.gen.models+'; specific: '+h.spec.models+'</span>'
+      +'</div>').join("");
+  }catch(e){ box.innerHTML="QC error: "+((e&&e.message)||e); }
+}
+
 async function doBuild(){
   try{
     document.getElementById("err").style.display="none";
@@ -4423,6 +4493,7 @@ async function doBuild(){
     const g=buildGraph(loaded,currentMode(),showMols);
     render(g,loaded);
     if(cy){ cy.resize(); cy.fit(null,40); }  // guard against zero-size container at init
+    runQC(g.nodes);   // QC: flag same-protein parent/child annotation mismatches (async, fills #qc)
   }catch(e){ showErr((e&&e.stack)||String(e)); }
 }
 window.addEventListener("resize",()=>{ if(cy) cy.resize(); });
