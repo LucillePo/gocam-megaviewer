@@ -4455,7 +4455,7 @@ async function runQC(nodes, loaded){
         if(A.mf_id!==B.mf_id) d.push("MF");
         if(A.bp_id!==B.bp_id) d.push("BP");
         if(A.cc_id!==B.cc_id) d.push("CC");
-        const cxDiff = A.is_complex!==B.is_complex || (A.complex_parts||[]).join()!==(B.complex_parts||[]).join();
+        const cxDiff = A.is_complex!==B.is_complex || (A.complex_parts||[]).slice().sort().join()!==(B.complex_parts||[]).slice().sort().join();
         if(d.length===1 && !cxDiff) pairs.push({A,B,aspect:d[0]});
       }
     });
