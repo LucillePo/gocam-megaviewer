@@ -4489,6 +4489,8 @@ async function runQC(nodes){
 async function doBuild(){
   try{
     document.getElementById("err").style.display="none";
+    { const _q=document.getElementById("qc"), _n=document.getElementById("nqc");   // clear stale QC from the previous run
+      if(_q) _q.innerHTML="Build a graph to run QC checks."; if(_n) _n.textContent=""; }
     const nl=document.getElementById("notloaded");
     const ids=currentIds();
     if(!ids.length){ nl.innerHTML=""; if(cy){ cy.elements().remove(); } return; }
