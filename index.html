@@ -3910,6 +3910,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
     <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <button class="primary" id="build">Build graph</button>
+      <button id="sharelink" title="Copy a link that opens this exact set of models">Copy share link</button>
       <label class="chk"><input type="radio" name="mode" value="loose" checked> loose</label>
       <label class="chk"><input type="radio" name="mode" value="strict"> strict</label>
     </div>
@@ -4554,7 +4555,28 @@ makeResizer("rzR","side","right");
 document.getElementById("colorBy").value = colorBy;   // reflect baked-in default scheme
 renderPalette();
 renderCacheList();
-doBuild();
+
+// --- shareable links: read model IDs from the URL (?ids=a,b,c) and build; and a Copy-link button ---
+function shareURL(){
+  const ids=currentIds().map(s=>s.replace(/^gomodel:/,""));
+  return location.origin+location.pathname+(ids.length?("?ids="+ids.join(",")):"");
+}
+const _sl=document.getElementById("sharelink");
+if(_sl) _sl.onclick=()=>{
+  const url=shareURL();
+  if(currentIds().length===0){ flash("enter model IDs first"); return; }
+  (navigator.clipboard&&navigator.clipboard.writeText(url).then(()=>flash("share link copied"))
+    .catch(()=>window.prompt("Copy this link:",url))) || window.prompt("Copy this link:",url);
+};
+(function initFromURL(){
+  const p=new URLSearchParams(location.search);
+  const raw=p.get("ids")||p.get("models")||"";
+  if(raw){
+    document.getElementById("ids").value =
+      raw.split(/[\s,;]+/).filter(Boolean).map(s=>s.startsWith("gomodel:")?s:"gomodel:"+s).join("\n");
+  }
+  doBuild();   // empty box -> returns quietly; ?ids= -> fetches + draws immediately
+})();
 </script>
 </body>
 </html>
