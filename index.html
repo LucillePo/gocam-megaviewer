@@ -4425,6 +4425,15 @@ function subsumption(t1,t2){   // null, or which term is the more specific one
   if(a1.has(t2)) return {general:t2, specific:t1};
   return null;
 }
+function qcHighlight(ids){   // focus + halo the two mismatched units in the graph
+  if(!cy) return;
+  let coll=cy.collection();
+  ids.forEach(id=>{ const n=cy.getElementById(id); if(n&&n.length) coll=coll.union(n); });
+  if(!coll.length) return;
+  coll.style({"display":"element","overlay-color":"#e0a800","overlay-opacity":0.35,"overlay-padding":12});
+  cy.animate({fit:{eles:coll, padding:90}},{duration:350});
+  setTimeout(function(){ try{ coll.removeStyle("display overlay-color overlay-opacity overlay-padding"); }catch(e){} },4000);
+}
 async function runQC(nodes){
   const box=document.getElementById("qc"), cnt=document.getElementById("nqc");
   if(!box) return;
@@ -4453,22 +4462,27 @@ async function runQC(nodes){
       const [idk,lblk]=asp[p.aspect];
       const s=subsumption(p.A[idk], p.B[idk]); if(!s) return;
       const A=p.A, B=p.B;
-      const spec=(A[idk]===s.specific)?A:B, gen=(A[idk]===s.specific)?B:A;
+      const specNode=(A[idk]===s.specific)?A:B, genNode=(A[idk]===s.specific)?B:A;
       const names=ms=>ms.map(m=>(CACHE[m]&&CACHE[m].title)||m).join(", ");
       hits.push({aspect:p.aspect, gp:A.gp||A.gp_id,
-        gen:{id:s.general, label:gen[lblk]||s.general, models:names(gen.models)},
-        spec:{id:s.specific, label:spec[lblk]||s.specific, models:names(spec.models)}});
+        gen:{id:s.general, label:genNode[lblk]||s.general, models:names(genNode.models), node:genNode.id},
+        spec:{id:s.specific, label:specNode[lblk]||s.specific, models:names(specNode.models), node:specNode.id}});
     });
     cnt.textContent="("+hits.length+")";
     if(!hits.length){ box.innerHTML="No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
     const q=id=>'<a href="https://www.ebi.ac.uk/QuickGO/term/'+id+'" target="_blank" rel="noopener">'+id+'</a>';
     box.innerHTML = hits.map(h=>
-      '<div style="border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
+      '<div class="qcitem" data-a="'+h.gen.node+'" data-b="'+h.spec.node+'" title="click to highlight both units in the graph" '
+      +'style="cursor:pointer;border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
       +'&#9888; <b>'+h.gp+'</b> — '+h.aspect+' precision mismatch (units did not merge):<br>'
       +'general: '+q(h.gen.id)+' &ldquo;'+h.gen.label+'&rdquo;<br>'
       +'specific: '+q(h.spec.id)+' &ldquo;'+h.spec.label+'&rdquo;<br>'
       +'<span class="sub">models &mdash; general: '+h.gen.models+'; specific: '+h.spec.models+'</span>'
+      +'<span class="sub"> &middot; click to highlight in graph</span>'
       +'</div>').join("");
+    box.querySelectorAll(".qcitem").forEach(el=>{
+      el.addEventListener("click",e=>{ if(e.target.tagName==="A") return; qcHighlight([el.dataset.a, el.dataset.b]); });
+    });
   }catch(e){ box.innerHTML="QC error: "+((e&&e.message)||e); }
 }
 
