@@ -4443,7 +4443,7 @@ async function runQC(nodes, loaded){
   if(!box) return;
   try{
     const snap=(loaded||[]).filter(id=>CACHE[id] && CACHE[id]._src==="api");
-    if(snap.length){ cnt.textContent=""; box.innerHTML='<span class="sub">QC skipped &mdash; '+snap.length+' model(s) loaded from the production snapshot (may lag live Noctua). QC runs only on live-sourced data (bake from live with refresh.sh).</span>'; return; }
+    const caveat = snap.length ? '<div class="sub" style="margin-bottom:6px;color:#a15c00">&#9888; QC based on GO production-snapshot data ('+snap.length+' of '+(loaded||[]).length+' model(s) may lag live Noctua) — verify flags against live.</div>' : '';
     box.innerHTML="checking annotations…"; cnt.textContent="";
     const asp={MF:["mf_id","mf"], BP:["bp_id","bp"], CC:["cc_id","cc"]};
     const byGp={};
@@ -4459,7 +4459,7 @@ async function runQC(nodes, loaded){
         if(d.length===1 && !cxDiff) pairs.push({A,B,aspect:d[0]});
       }
     });
-    if(!pairs.length){ box.innerHTML="No same-protein near-miss pairs to check."; cnt.textContent="(0)"; return; }
+    if(!pairs.length){ box.innerHTML=caveat+"No same-protein near-miss pairs to check."; cnt.textContent="(0)"; return; }
     const terms=new Set();
     pairs.forEach(p=>{ const idk=asp[p.aspect][0]; terms.add(p.A[idk]); terms.add(p.B[idk]); });
     await ancestorsOf([...terms]);
@@ -4475,9 +4475,9 @@ async function runQC(nodes, loaded){
         spec:{id:s.specific, label:specNode[lblk]||s.specific, models:names(specNode.models), node:specNode.id}});
     });
     cnt.textContent="("+hits.length+")";
-    if(!hits.length){ box.innerHTML="No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
+    if(!hits.length){ box.innerHTML=caveat+"No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
     const q=id=>'<a href="https://www.ebi.ac.uk/QuickGO/term/'+id+'" target="_blank" rel="noopener">'+id+'</a>';
-    box.innerHTML = hits.map(h=>
+    box.innerHTML = caveat + hits.map(h=>
       '<div class="qcitem" data-a="'+h.gen.node+'" data-b="'+h.spec.node+'" title="click to highlight both units in the graph" '
       +'style="cursor:pointer;border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
       +'&#9888; <b>'+h.gp+'</b> — '+h.aspect+' precision mismatch (units did not merge):<br>'
