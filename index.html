@@ -4145,7 +4145,8 @@ function buildGraph(selectedIds, mode, showMols){
     actToNode[a.local_id] = nid;
     if(!nodes[nid]){
       nodes[nid] = {id:nid, sig:intrinsicKey(a), gp:a.gp, gp_id:a.gp_id, is_complex:a.is_complex,
-        complex_parts:a.complex_parts, mf:a.mf, mf_id:a.mf_id, bp:a.bp, bp_id:a.bp_id,
+        complex_parts:a.complex_parts, complex_part_ids:a.complex_part_ids,
+        mf:a.mf, mf_id:a.mf_id, bp:a.bp, bp_id:a.bp_id,
         cc:a.cc, cc_id:a.cc_id, mols:[], models:[]};
     }
     const n = nodes[nid];
@@ -4197,7 +4198,7 @@ function buildGraph(selectedIds, mode, showMols){
         const grp=find(slotId(anode,term,pred));
         const mnid="m_"+grp.replace(/[^a-zA-Z0-9]/g,"_");
         if(!molNodes[mnid]) molNodes[mnid]={id:mnid, sig:mnid, is_mol:true, gp:label, gp_id:term,
-          is_complex:false, complex_parts:[], mf:"", mf_id:"", bp:"", bp_id:"", cc:"", cc_id:"",
+          is_complex:false, complex_parts:[], complex_part_ids:[], mf:"", mf_id:"", bp:"", bp_id:"", cc:"", cc_id:"",
           mols:[], models:[], bridge:false};
         if(!molNodes[mnid].models.includes(mid)) molNodes[mnid].models.push(mid);
         let src, tgt, cls;
@@ -4320,10 +4321,11 @@ function wireInteractions(){
     const models=(n.models||[]).map(id=>`<span class="tag model" data-m="${id}"><span class="mono">${id.split(':')[1]}</span></span>`).join(" ");
     document.getElementById("detail").innerHTML=
       `<h1>${n.is_complex?"⬡ ":""}${n.gp||"?"}</h1>`+
-      (n.is_complex?`<div class="row"><span class="k">parts</span>${(n.complex_parts||[]).join(", ")}</div>`:"")+
-      `<div class="row"><span class="k">MF</span>${n.mf||"?"} <span class="mono">${n.mf_id||""}</span></div>`+
-      `<div class="row"><span class="k">BP</span>${n.bp||"?"} <span class="mono">${n.bp_id||""}</span></div>`+
-      `<div class="row"><span class="k">CC</span>${n.cc||"?"} <span class="mono">${n.cc_id||""}</span></div>`+
+      (n.is_complex?`<div class="row"><span class="k">gene product</span><span class="mono">${n.gp_id||""}</span></div>`:`<div class="row"><span class="k">gene product</span><span class="mono">${n.gp_id||""}</span></div>`)+
+      (n.is_complex?`<div class="row"><span class="k" title="complex subunits">subunits</span>${(n.complex_parts||[]).map((lbl,i)=>`${lbl} <span class="mono">${(n.complex_part_ids||[])[i]||""}</span>`).join("<br>")||"<span class='sub'>(none listed)</span>"}</div>`:"")+
+      `<div class="row"><span class="k" title="molecular function">MF</span>${n.mf||"<span class='sub'>(none)</span>"} <span class="mono">${n.mf_id||""}</span></div>`+
+      `<div class="row"><span class="k" title="biological process (part_of)">BP</span>${n.bp||"<span class='sub'>(none)</span>"} <span class="mono">${n.bp_id||""}</span></div>`+
+      `<div class="row"><span class="k" title="cellular component (occurs_in)">CC</span>${n.cc||"<span class='sub'>(none)</span>"} <span class="mono">${n.cc_id||""}</span></div>`+
       `<div class="row" style="margin-top:6px"><span class="k">mols</span>${mols}</div>`+
       `<div class="row" style="margin-top:6px"><span class="k">in</span>${models}`+(n.bridge?` <b style="color:#c98a00">↔ bridge</b>`:"")+`</div>`+
       `<div class="row" style="margin-top:8px"><span class="k">colour</span>`+
