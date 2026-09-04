@@ -3905,17 +3905,12 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <div id="app">
   <div id="left"><div class="pad">
     <h1>GO-CAM connectivity</h1>
-    <div class="sub">Write model IDs (one per line), then Build. Drag boxes to arrange.</div>
+    <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
-    <textarea id="ids">gomodel:6918f23700000035
-gomodel:69ea894900004256
-gomodel:6a0784b700000502
-gomodel:6a18a9ba00000549
-gomodel:6a2b236300001621
-gomodel:6a4e740f00000478
-gomodel:6a7e360900000608</textarea>
+    <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
     <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <button class="primary" id="build">Build graph</button>
+      <button id="sharelink" title="Copy a link that opens this exact set of models">Copy share link</button>
       <label class="chk"><input type="radio" name="mode" value="loose" checked> loose</label>
       <label class="chk"><input type="radio" name="mode" value="strict"> strict</label>
     </div>
@@ -3923,6 +3918,8 @@ gomodel:6a7e360900000608</textarea>
     <h2>Loaded models <span class="sub" id="ncache"></span></h2>
     <div id="cachelist" class="sub"></div>
     <div class="warn" id="notloaded"></div>
+    <h2>Quality control <span class="sub" id="nqc"></span></h2>
+    <div id="qc" class="sub">Build a graph to run QC checks.</div>
   </div></div>
 
   <div class="resizer" id="rzL"></div>
@@ -3992,7 +3989,7 @@ window.addEventListener("unhandledrejection",ev=>showErr("promise: "+(ev.reason&
 if(typeof cytoscape==="undefined"){ showErr("Cytoscape library did not load — the graph engine is unavailable in this browser context."); }
 </script>
 <script>
-const CACHE = {"gomodel:6918f23700000035": {"id": "gomodel:6918f23700000035", "title": "Dim light signaling mediated by RHO photoreceptor via G-alpha-t (transducin)_Visual perception (Human)", "status": "production", "activities": [{"local_id": "gomodel:6918f23700000035/6918f23700000036", "gp": "PDE6G", "gp_id": "UniProtKB:P18545", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "enzyme inhibitor activity", "mf_id": "GO:0004857", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/6918f23700001883"}]}, {"local_id": "gomodel:6918f23700000035/6918f23700000053", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/6918f23700000036"}]}, {"local_id": "gomodel:6918f23700000035/6918f23700001883", "gp": "rod photoreceptor phosphodiesterase 6 complex", "gp_id": "GO:7770030", "is_complex": true, "complex_parts": ["PDE6B", "PDE6A"], "complex_part_ids": ["UniProtKB:P16499", "UniProtKB:P35913"], "mf": "3',5'-cyclic-GMP phosphodiesterase activity", "mf_id": "GO:0047555", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/69ea894900004226"}]}, {"local_id": "gomodel:6918f23700000035/69ea894900004226", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGB1", "CNGA1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6918f23700000035/69ea894900004240"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6918f23700000035/69ea894900004236"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:6918f23700000035/69ea894900004238"], ["has input", "sodium(1+)", "CHEBI:29101", "gomodel:6918f23700000035/69ea894900004234"]], "edges": []}, {"local_id": "gomodel:6918f23700000035/6918f23700000045", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6918f23700000035/6918f23700000050"], ["has small molecule activator", "all-trans-retinal", "CHEBI:17898", "gomodel:6918f23700000035/6918f23700000063"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6918f23700000035/6918f23700000053"}]}]}, "gomodel:69ea894900004256": {"id": "gomodel:69ea894900004256", "title": "CNG channel transport by ankyrin-G/ANK3_Visual perception (Human)", "status": "production", "activities": [{"local_id": "gomodel:69ea894900004256/69ea894900004343", "gp": "ANK3", "gp_id": "UniProtKB:Q12955", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "cytoskeletal protein-membrane anchor activity", "mf_id": "GO:0106006", "bp": "protein localization to plasma membrane", "bp_id": "GO:0072659", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "CNGB1", "UniProtKB:Q14028", "gomodel:69ea894900004256/69ea894900004348"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:69ea894900004256/69ea894900004257"}]}, {"local_id": "gomodel:69ea894900004256/69ea894900004257", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGA1", "CNGB1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "sodium(1+)", "CHEBI:29101", "gomodel:69ea894900004256/69ea894900004265"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:69ea894900004256/69ea894900004271"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:69ea894900004256/69ea894900004269"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:69ea894900004256/69ea894900004267"]], "edges": []}]}, "gomodel:6a0784b700000502": {"id": "gomodel:6a0784b700000502", "title": "cGMP recovery by CGAP2 and RetGC2 through negative feedback loop in rods_Visual perception (Human)", "status": "production", "activities": [{"local_id": "gomodel:6a0784b700000502/6a0784b700000511", "gp": "GUCA1B", "gp_id": "UniProtKB:Q9UMX6", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activator activity", "mf_id": "GO:0030250", "bp": "cellular response to calcium ion", "bp_id": "GO:0071277", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GUCY2F", "UniProtKB:P51841", "gomodel:6a0784b700000502/6a7e360900000688"], ["has small molecule inhibitor", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000524"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a0784b700000502/6a0784b700000503"}]}, {"local_id": "gomodel:6a0784b700000502/6a0784b700000503", "gp": "GUCY2F", "gp_id": "UniProtKB:P51841", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activity", "mf_id": "GO:0004383", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has output", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a0784b700000502/6a0784b700000535"], ["has input", "GTP(4-)", "CHEBI:37565", "gomodel:6a0784b700000502/6a0784b700000531"]], "edges": []}, {"local_id": "gomodel:6a0784b700000502/6a0784b700000539", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGB1", "CNGA1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has small molecule activator", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a0784b700000502/6a0784b700000535"], ["has input", "sodium(1+)", "CHEBI:29101", "gomodel:6a0784b700000502/6a0784b700000555"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000524"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000557"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:6a0784b700000502/6a0784b700000561"]], "edges": []}]}, "gomodel:6a18a9ba00000549": {"id": "gomodel:6a18a9ba00000549", "title": "GNAT1 (transducin) recovery mediated by the RGS9-1-Gbeta5L-RGS9BP complex_Visual perception (Human)", "status": "production", "activities": [{"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000635", "gp": "RGS9", "gp_id": "UniProtKB:O75916-3", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "GTPase activator activity", "mf_id": "GO:0005096", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a18a9ba00000549/6a18a9ba00000715"]], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000588"}]}, {"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000640", "gp": "RGS9BP", "gp_id": "UniProtKB:Q6ZS82", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein-containing complex stabilizing activity", "mf_id": "GO:0140777", "bp": "protein localization to plasma membrane", "bp_id": "GO:0072659", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNB5", "UniProtKB:O14775-1", "gomodel:6a18a9ba00000549/6a2b236300000796"], ["has input", "RGS9", "UniProtKB:O75916-3", "gomodel:6a18a9ba00000549/6a2b236300000552"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000635"}]}, {"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000588", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": []}, {"local_id": "gomodel:6a18a9ba00000549/6a2b236300000569", "gp": "GNB5", "gp_id": "UniProtKB:O14775-1", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein-containing complex stabilizing activity", "mf_id": "GO:0140777", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "RGS9", "UniProtKB:O75916-3", "gomodel:6a18a9ba00000549/6a2b236300000572"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000635"}]}]}, "gomodel:6a2b236300001621": {"id": "gomodel:6a2b236300001621", "title": "Deactivation of photoactivated rhodopsin (RHO) by rhodopsin kinase GRK1 and S-arrestin (SAG) in rod photoreceptors (Human)", "status": "production", "activities": [{"local_id": "gomodel:6a2b236300001621/6a2b236300001622", "gp": "GRK1", "gp_id": "UniProtKB:Q15835", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "rhodopsin kinase activity", "mf_id": "GO:0050254", "bp": "negative regulation of opsin-mediated signaling pathway", "bp_id": "GO:0016059", "cc": "photoreceptor outer segment", "cc_id": "GO:0001750", "mols": [["has input", "RHO", "UniProtKB:P08100", "gomodel:6a2b236300001621/6a2b236300001624"]], "edges": [{"cls": "input", "label": "provides input for", "downstream": "gomodel:6a2b236300001621/6a2b236300001631"}]}, {"local_id": "gomodel:6a2b236300001621/6a2b236300001631", "gp": "SAG", "gp_id": "UniProtKB:P10523", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein sequestering activity", "mf_id": "GO:0140311", "bp": "negative regulation of opsin-mediated signaling pathway", "bp_id": "GO:0016059", "cc": "photoreceptor outer segment", "cc_id": "GO:0001750", "mols": [["has input", "RHO", "UniProtKB:P08100", "gomodel:6a2b236300001621/6a2b236300001638"]], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6a2b236300001621/6a2b236300001660"}]}, {"local_id": "gomodel:6a2b236300001621/6a2b236300001660", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a2b236300001621/6a2b236300001663"]], "edges": []}]}, "gomodel:6a4e740f00000478": {"id": "gomodel:6a4e740f00000478", "title": "Rod opsin (RHO)-transducin coupling in phototransduction (Gb1/g1 adaptor)_Visual Perception (Human)", "status": "development", "activities": [{"local_id": "gomodel:6a4e740f00000478/6a4e740f00000480", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": []}, {"local_id": "gomodel:6a4e740f00000478/6a4e740f00000481", "gp": "G-protein beta/gamma-subunit complex", "gp_id": "GO:0031680", "is_complex": true, "complex_parts": ["GNB1", "GNGT1"], "complex_part_ids": ["UniProtKB:P62873", "UniProtKB:P63211"], "mf": "signaling receptor complex adaptor activity", "mf_id": "GO:0030159", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a4e740f00000478/6a4e740f00000489"], ["has input", "RHO", "UniProtKB:P08100", "gomodel:6a4e740f00000478/6a4e740f00000488"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a4e740f00000478/6a4e740f00000479"}]}, {"local_id": "gomodel:6a4e740f00000478/6a4e740f00000479", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a4e740f00000478/6a4e740f00000487"], ["has small molecule activator", "all-trans-retinal", "CHEBI:17898", "gomodel:6a4e740f00000478/6a4e740f00000545"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a4e740f00000478/6a4e740f00000480"}]}]}, "gomodel:6a7e360900000608": {"id": "gomodel:6a7e360900000608", "title": "SLC24A1 (NCKX1) rod photoresponse recovery step_Visual Perception (Human)", "status": "development", "activities": [{"local_id": "gomodel:6a7e360900000608/6a7e360900000636", "gp": "GUCA1B", "gp_id": "UniProtKB:Q9UMX6", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activator activity", "mf_id": "GO:0030250", "bp": "cellular response to calcium ion", "bp_id": "GO:0071277", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GUCY2F", "UniProtKB:P51841", "gomodel:6a7e360900000608/6a7e360900000641"], ["has small molecule inhibitor", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000624"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a7e360900000608/6a7e360900000628"}]}, {"local_id": "gomodel:6a7e360900000608/6a7e360900000609", "gp": "SLC24A1", "gp_id": "UniProtKB:O60721", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "calcium, potassium:sodium antiporter activity", "mf_id": "GO:0008273", "bp": "intracellular calcium ion homeostasis", "bp_id": "GO:0006874", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000624"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000622"]], "edges": []}, {"local_id": "gomodel:6a7e360900000608/6a7e360900000628", "gp": "GUCY2F", "gp_id": "UniProtKB:P51841", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activity", "mf_id": "GO:0004383", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GTP(4-)", "CHEBI:37565", "gomodel:6a7e360900000608/6a7e360900000658"], ["has output", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a7e360900000608/6a7e360900000643"]], "edges": []}]}};
+const CACHE = {"gomodel:6918f23700000035": {"id": "gomodel:6918f23700000035", "title": "Dim light signaling mediated by RHO photoreceptor via G-alpha-t (transducin)_Visual perception (Human)", "status": "production", "_src": "live", "activities": [{"local_id": "gomodel:6918f23700000035/6918f23700000036", "gp": "PDE6G", "gp_id": "UniProtKB:P18545", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "enzyme inhibitor activity", "mf_id": "GO:0004857", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/6918f23700001883"}]}, {"local_id": "gomodel:6918f23700000035/6918f23700000053", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/6918f23700000036"}]}, {"local_id": "gomodel:6918f23700000035/6918f23700001883", "gp": "rod photoreceptor phosphodiesterase 6 complex", "gp_id": "GO:7770030", "is_complex": true, "complex_parts": ["PDE6B", "PDE6A"], "complex_part_ids": ["UniProtKB:P16499", "UniProtKB:P35913"], "mf": "3',5'-cyclic-GMP phosphodiesterase activity", "mf_id": "GO:0047555", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6918f23700000035/69ea894900004226"}]}, {"local_id": "gomodel:6918f23700000035/69ea894900004226", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGB1", "CNGA1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6918f23700000035/69ea894900004240"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6918f23700000035/69ea894900004236"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:6918f23700000035/69ea894900004238"], ["has input", "sodium(1+)", "CHEBI:29101", "gomodel:6918f23700000035/69ea894900004234"]], "edges": []}, {"local_id": "gomodel:6918f23700000035/6918f23700000045", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6918f23700000035/6918f23700000050"], ["has small molecule activator", "all-trans-retinal", "CHEBI:17898", "gomodel:6918f23700000035/6918f23700000063"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6918f23700000035/6918f23700000053"}]}]}, "gomodel:69ea894900004256": {"id": "gomodel:69ea894900004256", "title": "CNG channel transport by ankyrin-G/ANK3_Visual perception (Human)", "status": "production", "_src": "live", "activities": [{"local_id": "gomodel:69ea894900004256/69ea894900004343", "gp": "ANK3", "gp_id": "UniProtKB:Q12955", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "cytoskeletal protein-membrane anchor activity", "mf_id": "GO:0106006", "bp": "protein localization to plasma membrane", "bp_id": "GO:0072659", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "CNGB1", "UniProtKB:Q14028", "gomodel:69ea894900004256/69ea894900004348"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:69ea894900004256/69ea894900004257"}]}, {"local_id": "gomodel:69ea894900004256/69ea894900004257", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGA1", "CNGB1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "sodium(1+)", "CHEBI:29101", "gomodel:69ea894900004256/69ea894900004265"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:69ea894900004256/69ea894900004271"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:69ea894900004256/69ea894900004269"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:69ea894900004256/69ea894900004267"]], "edges": []}]}, "gomodel:6a0784b700000502": {"id": "gomodel:6a0784b700000502", "title": "cGMP recovery by CGAP2 and RetGC2 through negative feedback loop in rods_Visual perception (Human)", "status": "production", "_src": "live", "activities": [{"local_id": "gomodel:6a0784b700000502/6a0784b700000511", "gp": "GUCA1B", "gp_id": "UniProtKB:Q9UMX6", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activator activity", "mf_id": "GO:0030250", "bp": "cellular response to calcium ion", "bp_id": "GO:0071277", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GUCY2F", "UniProtKB:P51841", "gomodel:6a0784b700000502/6a7e360900000688"], ["has small molecule inhibitor", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000524"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a0784b700000502/6a0784b700000503"}]}, {"local_id": "gomodel:6a0784b700000502/6a0784b700000503", "gp": "GUCY2F", "gp_id": "UniProtKB:P51841", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activity", "mf_id": "GO:0004383", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has output", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a0784b700000502/6a0784b700000535"], ["has input", "GTP(4-)", "CHEBI:37565", "gomodel:6a0784b700000502/6a0784b700000531"]], "edges": []}, {"local_id": "gomodel:6a0784b700000502/6a0784b700000539", "gp": "intracellular cyclic nucleotide activated cation channel complex", "gp_id": "GO:0017071", "is_complex": true, "complex_parts": ["CNGB1", "CNGA1"], "complex_part_ids": ["UniProtKB:P29973", "UniProtKB:Q14028"], "mf": "intracellularly cGMP-activated cation channel activity", "mf_id": "GO:0005223", "bp": "visual perception", "bp_id": "GO:0007601", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has small molecule activator", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a0784b700000502/6a0784b700000535"], ["has input", "sodium(1+)", "CHEBI:29101", "gomodel:6a0784b700000502/6a0784b700000555"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000524"], ["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6a0784b700000502/6a0784b700000557"], ["has output", "sodium(1+)", "CHEBI:29101", "gomodel:6a0784b700000502/6a0784b700000561"]], "edges": []}]}, "gomodel:6a18a9ba00000549": {"id": "gomodel:6a18a9ba00000549", "title": "GNAT1 (transducin) recovery mediated by the RGS9-1-Gbeta5L-RGS9BP complex_Visual perception (Human)", "status": "production", "_src": "live", "activities": [{"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000635", "gp": "RGS9", "gp_id": "UniProtKB:O75916-3", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "GTPase activator activity", "mf_id": "GO:0005096", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a18a9ba00000549/6a18a9ba00000715"]], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000588"}]}, {"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000640", "gp": "RGS9BP", "gp_id": "UniProtKB:Q6ZS82", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein-containing complex stabilizing activity", "mf_id": "GO:0140777", "bp": "protein localization to plasma membrane", "bp_id": "GO:0072659", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNB5", "UniProtKB:O14775-1", "gomodel:6a18a9ba00000549/6a2b236300000796"], ["has input", "RGS9", "UniProtKB:O75916-3", "gomodel:6a18a9ba00000549/6a2b236300000552"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000635"}]}, {"local_id": "gomodel:6a18a9ba00000549/6a18a9ba00000588", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": []}, {"local_id": "gomodel:6a18a9ba00000549/6a2b236300000569", "gp": "GNB5", "gp_id": "UniProtKB:O14775-1", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein-containing complex stabilizing activity", "mf_id": "GO:0140777", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "RGS9", "UniProtKB:O75916-3", "gomodel:6a18a9ba00000549/6a2b236300000572"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a18a9ba00000549/6a18a9ba00000635"}]}]}, "gomodel:6a2b236300001621": {"id": "gomodel:6a2b236300001621", "title": "Deactivation of photoactivated rhodopsin (RHO) by rhodopsin kinase GRK1 and S-arrestin (SAG) in rod photoreceptors (Human)", "status": "production", "_src": "live", "activities": [{"local_id": "gomodel:6a2b236300001621/6a2b236300001622", "gp": "GRK1", "gp_id": "UniProtKB:Q15835", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "rhodopsin kinase activity", "mf_id": "GO:0050254", "bp": "negative regulation of opsin-mediated signaling pathway", "bp_id": "GO:0016059", "cc": "photoreceptor outer segment", "cc_id": "GO:0001750", "mols": [["has input", "RHO", "UniProtKB:P08100", "gomodel:6a2b236300001621/6a2b236300001624"]], "edges": [{"cls": "input", "label": "provides input for", "downstream": "gomodel:6a2b236300001621/6a2b236300001631"}]}, {"local_id": "gomodel:6a2b236300001621/6a2b236300001631", "gp": "SAG", "gp_id": "UniProtKB:P10523", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "protein sequestering activity", "mf_id": "GO:0140311", "bp": "negative regulation of opsin-mediated signaling pathway", "bp_id": "GO:0016059", "cc": "photoreceptor outer segment", "cc_id": "GO:0001750", "mols": [["has input", "RHO", "UniProtKB:P08100", "gomodel:6a2b236300001621/6a2b236300001638"]], "edges": [{"cls": "neg", "label": "directly negatively regulates", "downstream": "gomodel:6a2b236300001621/6a2b236300001660"}]}, {"local_id": "gomodel:6a2b236300001621/6a2b236300001660", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a2b236300001621/6a2b236300001663"]], "edges": []}]}, "gomodel:6a4e740f00000478": {"id": "gomodel:6a4e740f00000478", "title": "Rod opsin (RHO)-transducin coupling in phototransduction (Gb1/g1 adaptor)_Visual Perception (Human)", "status": "development", "_src": "live", "activities": [{"local_id": "gomodel:6a4e740f00000478/6a4e740f00000480", "gp": "GNAT1", "gp_id": "UniProtKB:P11488", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein activity", "mf_id": "GO:0003925", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [], "edges": []}, {"local_id": "gomodel:6a4e740f00000478/6a4e740f00000481", "gp": "G-protein beta/gamma-subunit complex", "gp_id": "GO:0031680", "is_complex": true, "complex_parts": ["GNB1", "GNGT1"], "complex_part_ids": ["UniProtKB:P62873", "UniProtKB:P63211"], "mf": "signaling receptor complex adaptor activity", "mf_id": "GO:0030159", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a4e740f00000478/6a4e740f00000489"], ["has input", "RHO", "UniProtKB:P08100", "gomodel:6a4e740f00000478/6a4e740f00000488"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a4e740f00000478/6a4e740f00000479"}]}, {"local_id": "gomodel:6a4e740f00000478/6a4e740f00000479", "gp": "RHO", "gp_id": "UniProtKB:P08100", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "G protein-coupled photoreceptor activity", "mf_id": "GO:0008020", "bp": "transducin-mediated opsin signaling pathway", "bp_id": "GO:0141190", "cc": "rod photoreceptor disc membrane", "cc_id": "GO:0120202", "mols": [["has input", "GNAT1", "UniProtKB:P11488", "gomodel:6a4e740f00000478/6a4e740f00000487"], ["has small molecule activator", "all-trans-retinal", "CHEBI:17898", "gomodel:6a4e740f00000478/6a4e740f00000545"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a4e740f00000478/6a4e740f00000480"}]}]}, "gomodel:6a7e360900000608": {"id": "gomodel:6a7e360900000608", "title": "SLC24A1 (NCKX1) rod photoresponse recovery step_Visual Perception (Human)", "status": "development", "_src": "live", "activities": [{"local_id": "gomodel:6a7e360900000608/6a7e360900000636", "gp": "GUCA1B", "gp_id": "UniProtKB:Q9UMX6", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activator activity", "mf_id": "GO:0030250", "bp": "cellular response to calcium ion", "bp_id": "GO:0071277", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GUCY2F", "UniProtKB:P51841", "gomodel:6a7e360900000608/6a7e360900000641"], ["has small molecule inhibitor", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000624"]], "edges": [{"cls": "pos", "label": "directly positively regulates", "downstream": "gomodel:6a7e360900000608/6a7e360900000628"}]}, {"local_id": "gomodel:6a7e360900000608/6a7e360900000609", "gp": "SLC24A1", "gp_id": "UniProtKB:O60721", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "calcium, potassium:sodium antiporter activity", "mf_id": "GO:0008273", "bp": "intracellular calcium ion homeostasis", "bp_id": "GO:0006874", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000624"], ["has output", "calcium(2+)", "CHEBI:29108", "gomodel:6a7e360900000608/6a7e360900000622"]], "edges": []}, {"local_id": "gomodel:6a7e360900000608/6a7e360900000628", "gp": "GUCY2F", "gp_id": "UniProtKB:P51841", "is_complex": false, "complex_parts": [], "complex_part_ids": [], "mf": "guanylate cyclase activity", "mf_id": "GO:0004383", "bp": "photoresponse recovery", "bp_id": "GO:0036368", "cc": "photoreceptor outer segment membrane", "cc_id": "GO:0042622", "mols": [["has input", "GTP(4-)", "CHEBI:37565", "gomodel:6a7e360900000608/6a7e360900000658"], ["has output", "3',5'-cyclic GMP(1-)", "CHEBI:57746", "gomodel:6a7e360900000608/6a7e360900000643"]], "edges": []}]}};
 const palette = ["#e76f51","#2a9d8f","#e9c46a","#8ab17d","#e07a5f","#6d597a","#457b9d","#b5838d","#9c6644","#3d5a80"];
 const MCOL = {}; Object.keys(CACHE).sort().forEach((m,i)=>MCOL[m]=palette[i%palette.length]);
 const ECOL = {pos:"#2e8b57", neg:"#c0392b", input:"#888888", mol:"#7a97a8"};
@@ -4100,7 +4097,9 @@ function renderCacheList(){
   const el = document.getElementById("cachelist");
   el.innerHTML = Object.values(CACHE).sort((a,b)=>a.id.localeCompare(b.id)).map(m=>
     `<div class="row"><span class="dot" style="width:9px;height:9px;border:none;background:${MCOL[m.id]}"></span> `+
-    `<span class="mono">${m.id.split(':')[1]}</span> ${m.title.replace(/_.*/,'')}</div>`).join("");
+    `<span class="mono">${m.id.split(':')[1]}</span> ${m.title.replace(/_.*/,'')}`+
+    (m._src==="api"?` <span class="sub" title="fetched from the GO production API — may lag live Noctua">&#9432; snapshot</span>`:``)+
+    `</div>`).join("");
 }
 
 // --- merge logic (client-side port) ---
@@ -4344,20 +4343,180 @@ function currentIds(){
 }
 function currentMode(){ return document.querySelector('input[name=mode]:checked').value; }
 
-function doBuild(){
+// ---- live fetch: Minerva JSON -> activity record (mirrors build_app.py extract) ----
+const API_BASE = "https://api.geneontology.org/api/go-cam/";
+const _CAUSAL = {
+  "RO:0002629": ["directly positively regulates","pos"],
+  "RO:0002630": ["directly negatively regulates","neg"],
+  "RO:0002304": ["causally upstream of, positive effect","pos"],
+  "RO:0002305": ["causally upstream of, negative effect","neg"],
+  "RO:0002413": ["provides input for","input"],
+  "RO:0002411": ["causally upstream of","input"]
+};
+const _MOLPRED = { "RO:0002233":"has input","RO:0002234":"has output",
+  "RO:0012001":"has small molecule activator","RO:0012002":"has small molecule inhibitor" };
+const _INVMOL = { "RO:0012005":"has small molecule activator","RO:0012006":"has small molecule inhibitor" };
+const _EB="RO:0002333",_PO="BFO:0000050",_OI="BFO:0000066",_HP="BFO:0000051",_MFROOT="GO:0003674";
+
+function minervaToRecord(mid, m){
+  if(!m || !Array.isArray(m.individuals) || !Array.isArray(m.facts))
+    return {id:mid,title:mid,status:null,activities:[],error:"no model data"};
+  const ind={}; for(const i of m.individuals) ind[i.id]=i;
+  const clsOf=id=>{ const i=ind[id]; const t=(i&&i.type&&i.type[0])||{}; return {id:t.id||null,label:t.label||t.id||null}; };
+  const roots=id=>new Set((((ind[id]||{})["root-type"])||[]).map(t=>t.id));
+  const bySub={}; for(const f of m.facts){ (bySub[f.subject]=bySub[f.subject]||[]).push(f); }
+  let title=mid,status=null;
+  for(const a of (m.annotations||[])){ if(a.key==="title") title=a.value; if(a.key==="state") status=a.value; }
+  const extraMols={};
+  for(const f of m.facts){ const lbl=_INVMOL[f.property];
+    if(lbl){ const c=clsOf(f.subject); (extraMols[f.object]=extraMols[f.object]||[]).push([lbl,c.label,c.id,f.subject]); } }
+  const activities=[];
+  for(const i of m.individuals){
+    if(!roots(i.id).has(_MFROOT)) continue;
+    const outs=bySub[i.id]||[];
+    if(!outs.some(f=>f.property===_EB)) continue;
+    const self=clsOf(i.id);
+    let gp=null,gp_id=null,is_complex=false,complex_parts=[],complex_part_ids=[],bp=null,bp_id=null,cc=null,cc_id=null;
+    const mols=[],edges=[];
+    for(const f of outs){ const p=f.property,tgt=f.object;
+      if(p===_EB){ const c=clsOf(tgt); gp=c.label; gp_id=c.id;
+        const parts=(bySub[tgt]||[]).filter(x=>x.property===_HP).map(x=>clsOf(x.object));
+        is_complex=parts.length>0; complex_parts=parts.map(x=>x.label); complex_part_ids=parts.map(x=>x.id).sort(); }
+      else if(p===_PO && bp_id===null){ const c=clsOf(tgt); bp=c.label; bp_id=c.id; }
+      else if(p===_OI && cc_id===null){ const c=clsOf(tgt); cc=c.label; cc_id=c.id; }
+      else if(_MOLPRED[p]){ const c=clsOf(tgt); mols.push([_MOLPRED[p],c.label,c.id,tgt]); }
+      else if(_CAUSAL[p]){ const cz=_CAUSAL[p]; edges.push({cls:cz[1],label:cz[0],downstream:tgt}); }
+    }
+    for(const em of (extraMols[i.id]||[])) mols.push(em);
+    activities.push({local_id:i.id,gp,gp_id,is_complex,complex_parts,complex_part_ids,
+      mf:self.label,mf_id:self.id,bp,bp_id,cc,cc_id,mols,edges});
+  }
+  return {id:mid,title,status,activities};
+}
+
+async function fetchModel(id){
+  const bare=id.replace(/^gomodel:/,"");
+  try{
+    const r=await fetch(API_BASE+"gomodel:"+bare,{headers:{Accept:"application/json"}});
+    if(!r.ok) return {id,ok:false,error:"HTTP "+r.status+(r.status===404?" — not on GO production API":"")};
+    const m=await r.json();
+    const rec=minervaToRecord(id,m);
+    if(rec.error||!rec.activities.length) return {id,ok:false,error:rec.error||"no activities found"};
+    rec._src="api";   // fetched from the GO production API = snapshot, may lag live Noctua
+    CACHE[id]=rec; return {id,ok:true};
+  }catch(e){ return {id,ok:false,error:(e&&e.message)||String(e)}; }
+}
+
+// ---- QC: flag same-protein units that fail to merge only because one GO term
+//      is a parent/child (ancestor/descendant) of the other ----
+const _ancCache={};   // GO id -> Set(ancestor ids), memoised
+async function ancestorsOf(ids){
+  const need=ids.filter(id=>/^GO:/.test(id) && !(id in _ancCache));
+  for(let i=0;i<need.length;i+=20){
+    const chunk=need.slice(i,i+20);
+    try{
+      const r=await fetch("https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/"+chunk.join(",")+"/ancestors?relations=is_a,part_of",{headers:{Accept:"application/json"}});
+      if(r.ok){ const d=await r.json(); (d.results||[]).forEach(t=>{ _ancCache[t.id]=new Set(t.ancestors||[]); }); }
+    }catch(e){}
+    chunk.forEach(id=>{ if(!(id in _ancCache)) _ancCache[id]=new Set(); });  // don't refetch failures
+  }
+}
+function subsumption(t1,t2){   // null, or which term is the more specific one
+  if(!t1||!t2||t1===t2) return null;
+  const a1=_ancCache[t1]||new Set(), a2=_ancCache[t2]||new Set();
+  if(a2.has(t1)) return {general:t1, specific:t2};
+  if(a1.has(t2)) return {general:t2, specific:t1};
+  return null;
+}
+function qcHighlight(ids){   // focus + halo the two mismatched units in the graph
+  if(!cy) return;
+  let coll=cy.collection();
+  ids.forEach(id=>{ const n=cy.getElementById(id); if(n&&n.length) coll=coll.union(n); });
+  if(!coll.length) return;
+  coll.style({"display":"element","overlay-color":"#e0a800","overlay-opacity":0.35,"overlay-padding":12});
+  cy.animate({fit:{eles:coll, padding:90}},{duration:350});
+  setTimeout(function(){ try{ coll.removeStyle("display overlay-color overlay-opacity overlay-padding"); }catch(e){} },4000);
+}
+async function runQC(nodes, loaded){
+  const box=document.getElementById("qc"), cnt=document.getElementById("nqc");
+  if(!box) return;
+  try{
+    const snap=(loaded||[]).filter(id=>CACHE[id] && CACHE[id]._src==="api");
+    if(snap.length){ cnt.textContent=""; box.innerHTML='<span class="sub">QC skipped &mdash; '+snap.length+' model(s) loaded from the production snapshot (may lag live Noctua). QC runs only on live-sourced data (bake from live with refresh.sh).</span>'; return; }
+    box.innerHTML="checking annotations…"; cnt.textContent="";
+    const asp={MF:["mf_id","mf"], BP:["bp_id","bp"], CC:["cc_id","cc"]};
+    const byGp={};
+    nodes.forEach(n=>{ if(n.gp_id) (byGp[n.gp_id]=byGp[n.gp_id]||[]).push(n); });
+    const pairs=[];
+    Object.values(byGp).forEach(g=>{
+      for(let i=0;i<g.length;i++) for(let j=i+1;j<g.length;j++){
+        const A=g[i], B=g[j], d=[];
+        if(A.mf_id!==B.mf_id) d.push("MF");
+        if(A.bp_id!==B.bp_id) d.push("BP");
+        if(A.cc_id!==B.cc_id) d.push("CC");
+        const cxDiff = A.is_complex!==B.is_complex || (A.complex_parts||[]).join()!==(B.complex_parts||[]).join();
+        if(d.length===1 && !cxDiff) pairs.push({A,B,aspect:d[0]});
+      }
+    });
+    if(!pairs.length){ box.innerHTML="No same-protein near-miss pairs to check."; cnt.textContent="(0)"; return; }
+    const terms=new Set();
+    pairs.forEach(p=>{ const idk=asp[p.aspect][0]; terms.add(p.A[idk]); terms.add(p.B[idk]); });
+    await ancestorsOf([...terms]);
+    const hits=[];
+    pairs.forEach(p=>{
+      const [idk,lblk]=asp[p.aspect];
+      const s=subsumption(p.A[idk], p.B[idk]); if(!s) return;
+      const A=p.A, B=p.B;
+      const specNode=(A[idk]===s.specific)?A:B, genNode=(A[idk]===s.specific)?B:A;
+      const names=ms=>ms.map(m=>(CACHE[m]&&CACHE[m].title)||m).join(", ");
+      hits.push({aspect:p.aspect, gp:A.gp||A.gp_id,
+        gen:{id:s.general, label:genNode[lblk]||s.general, models:names(genNode.models), node:genNode.id},
+        spec:{id:s.specific, label:specNode[lblk]||s.specific, models:names(specNode.models), node:specNode.id}});
+    });
+    cnt.textContent="("+hits.length+")";
+    if(!hits.length){ box.innerHTML="No parent/child annotation mismatches found (checked "+pairs.length+" same-protein pair(s))."; return; }
+    const q=id=>'<a href="https://www.ebi.ac.uk/QuickGO/term/'+id+'" target="_blank" rel="noopener">'+id+'</a>';
+    box.innerHTML = hits.map(h=>
+      '<div class="qcitem" data-a="'+h.gen.node+'" data-b="'+h.spec.node+'" title="click to highlight both units in the graph" '
+      +'style="cursor:pointer;border-left:3px solid #e0a800;background:#fff8e6;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
+      +'&#9888; <b>'+h.gp+'</b> — '+h.aspect+' precision mismatch (units did not merge):<br>'
+      +'general: '+q(h.gen.id)+' &ldquo;'+h.gen.label+'&rdquo;<br>'
+      +'specific: '+q(h.spec.id)+' &ldquo;'+h.spec.label+'&rdquo;<br>'
+      +'<span class="sub">models &mdash; general: '+h.gen.models+'; specific: '+h.spec.models+'</span>'
+      +'<span class="sub"> &middot; click to highlight in graph</span>'
+      +'</div>').join("");
+    box.querySelectorAll(".qcitem").forEach(el=>{
+      el.addEventListener("click",e=>{ if(e.target.tagName==="A") return; qcHighlight([el.dataset.a, el.dataset.b]); });
+    });
+  }catch(e){ box.innerHTML="QC error: "+((e&&e.message)||e); }
+}
+
+async function doBuild(){
   try{
     document.getElementById("err").style.display="none";
-    const ids = currentIds();
-    const loaded = ids.filter(id=>CACHE[id]);
-    const missing = ids.filter(id=>!CACHE[id]);
-    document.getElementById("notloaded").innerHTML = missing.length
-      ? "Not loaded (run ./refresh.sh to fetch): "+missing.map(m=>m.split(':')[1]).join(", ") : "";
-    if(!loaded.length){ showErr("No recognised model IDs. Parsed "+ids.length+" token(s); none are in the loaded cache."); return; }
+    { const _q=document.getElementById("qc"), _n=document.getElementById("nqc");   // clear stale QC from the previous run
+      if(_q) _q.innerHTML="Build a graph to run QC checks."; if(_n) _n.textContent=""; }
+    const nl=document.getElementById("notloaded");
+    const ids=currentIds();
+    if(!ids.length){ nl.innerHTML=""; if(cy){ cy.elements().remove(); } return; }
+    const need=ids.filter(id=>!CACHE[id]);
+    if(need.length){
+      nl.style.color="#555"; nl.innerHTML="Fetching "+need.length+" model(s) from GO…";
+      const res=await Promise.all(need.map(fetchModel));
+      const bad=res.filter(r=>!r.ok);
+      nl.style.color=""; nl.innerHTML = bad.length
+        ? "Could not load: "+bad.map(b=>b.id.replace(/^gomodel:/,"")+" ("+b.error+")").join("; ") : "";
+    } else { nl.innerHTML=""; }
+    const loaded=ids.filter(id=>CACHE[id]);
+    const snap=loaded.filter(id=>CACHE[id] && CACHE[id]._src==="api");
+    if(snap.length){ nl.innerHTML += (nl.innerHTML?"<br>":"") + '<span class="sub">&#9432; '+snap.length+' model(s) from production snapshot (may lag live Noctua): '+snap.map(id=>id.replace(/^gomodel:/,"")).join(", ")+'</span>'; }
+    if(!loaded.length){ showErr("None of the "+ids.length+" ID(s) entered could be loaded."); return; }
     if(typeof cytoscape==="undefined"){ showErr("Cytoscape not loaded; cannot draw."); return; }
-    const showMols = document.getElementById("showMols").checked;
-    const g = buildGraph(loaded, currentMode(), showMols);
-    render(g, loaded);
+    const showMols=document.getElementById("showMols").checked;
+    const g=buildGraph(loaded,currentMode(),showMols);
+    render(g,loaded);
     if(cy){ cy.resize(); cy.fit(null,40); }  // guard against zero-size container at init
+    runQC(g.nodes, loaded);   // QC only on live-sourced data; skips snapshot-fetched models
   }catch(e){ showErr((e&&e.stack)||String(e)); }
 }
 window.addEventListener("resize",()=>{ if(cy) cy.resize(); });
@@ -4490,7 +4649,28 @@ makeResizer("rzR","side","right");
 document.getElementById("colorBy").value = colorBy;   // reflect baked-in default scheme
 renderPalette();
 renderCacheList();
-doBuild();
+
+// --- shareable links: read model IDs from the URL (?ids=a,b,c) and build; and a Copy-link button ---
+function shareURL(){
+  const ids=currentIds().map(s=>s.replace(/^gomodel:/,""));
+  return location.origin+location.pathname+(ids.length?("?ids="+ids.join(",")):"");
+}
+const _sl=document.getElementById("sharelink");
+if(_sl) _sl.onclick=()=>{
+  const url=shareURL();
+  if(currentIds().length===0){ flash("enter model IDs first"); return; }
+  (navigator.clipboard&&navigator.clipboard.writeText(url).then(()=>flash("share link copied"))
+    .catch(()=>window.prompt("Copy this link:",url))) || window.prompt("Copy this link:",url);
+};
+(function initFromURL(){
+  const p=new URLSearchParams(location.search);
+  const raw=p.get("ids")||p.get("models")||"";
+  if(raw){
+    document.getElementById("ids").value =
+      raw.split(/[\s,;]+/).filter(Boolean).map(s=>s.startsWith("gomodel:")?s:"gomodel:"+s).join("\n");
+  }
+  doBuild();   // empty box -> returns quietly; ?ids= -> fetches + draws immediately
+})();
 </script>
 </body>
 </html>
