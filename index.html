@@ -3914,6 +3914,11 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <label class="chk"><input type="radio" name="mode" value="loose" checked> loose</label>
       <label class="chk"><input type="radio" name="mode" value="strict"> strict</label>
     </div>
+    <div class="row" style="margin-top:6px" title="Uncheck an aspect to ignore it when merging — units differing only in that aspect will then merge">Merge requires same:
+      <label class="chk"><input type="checkbox" id="mON" checked> MF</label>
+      <label class="chk"><input type="checkbox" id="bON" checked> BP</label>
+      <label class="chk"><input type="checkbox" id="cON" checked> CC</label>
+    </div>
     <div id="loadwarn"></div>
     <h2>Loaded models <span class="sub" id="ncache"></span></h2>
     <div id="cachelist" class="sub"></div>
@@ -4002,6 +4007,7 @@ function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
 const DEFAULT_STATE = {};     // baked-in layout/colours/scheme (from layout.json)
 let OVERRIDE = Object.assign({}, DEFAULT_STATE.colors || {});   // start clean each session (no localStorage auto-load)
 let PALETTE  = (DEFAULT_STATE.palette || []).slice();           // "My colours" — blank unless added this session
+let MERGE_ON = {mf:true, bp:true, cc:true};   // which GO aspects count toward merging (user-toggleable filter)
 let selectedSig = null;                       // sig of the currently clicked unit
 if(DEFAULT_STATE.scheme) colorBy = DEFAULT_STATE.scheme;
 
@@ -4106,7 +4112,11 @@ function renderCacheList(ids){
 // --- merge logic (client-side port) ---
 function intrinsicKey(a){
   const eb = a.is_complex ? ("complex:"+a.gp_id+":"+(a.complex_part_ids||[]).join(",")) : ("gp:"+a.gp_id);
-  return [eb, a.mf_id, a.bp_id, a.cc_id].join("|");
+  const parts=[eb];
+  if(MERGE_ON.mf) parts.push("mf:"+a.mf_id);
+  if(MERGE_ON.bp) parts.push("bp:"+a.bp_id);
+  if(MERGE_ON.cc) parts.push("cc:"+a.cc_id);
+  return parts.join("|");
 }
 
 function buildGraph(selectedIds, mode, showMols){
@@ -4452,9 +4462,9 @@ async function runQC(nodes, loaded){
     Object.values(byGp).forEach(g=>{
       for(let i=0;i<g.length;i++) for(let j=i+1;j<g.length;j++){
         const A=g[i], B=g[j], d=[];
-        if(A.mf_id!==B.mf_id) d.push("MF");
-        if(A.bp_id!==B.bp_id) d.push("BP");
-        if(A.cc_id!==B.cc_id) d.push("CC");
+        if(MERGE_ON.mf && A.mf_id!==B.mf_id) d.push("MF");
+        if(MERGE_ON.bp && A.bp_id!==B.bp_id) d.push("BP");
+        if(MERGE_ON.cc && A.cc_id!==B.cc_id) d.push("CC");
         const cxDiff = A.is_complex!==B.is_complex || (A.complex_parts||[]).slice().sort().join()!==(B.complex_parts||[]).slice().sort().join();
         if(d.length===1 && !cxDiff) pairs.push({A,B,aspect:d[0]});
       }
@@ -4526,6 +4536,7 @@ async function doBuild(){
     if(!loaded.length){ showErr("None of the "+ids.length+" ID(s) entered could be loaded."); return; }
     if(typeof cytoscape==="undefined"){ showErr("Cytoscape not loaded; cannot draw."); return; }
     const showMols=document.getElementById("showMols").checked;
+    MERGE_ON={ mf:document.getElementById("mON").checked, bp:document.getElementById("bON").checked, cc:document.getElementById("cON").checked };
     const g=buildGraph(loaded,currentMode(),showMols);
     render(g,loaded);
     renderCacheList(loaded);
@@ -4538,6 +4549,7 @@ window.addEventListener("resize",()=>{ if(cy) cy.resize(); });
 
 document.getElementById("build").onclick=doBuild;
 document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=doBuild);
+["mON","bON","cON"].forEach(id=>{ const e=document.getElementById(id); if(e) e.addEventListener("change",doBuild); });
 document.getElementById("fit").onclick=()=>cy&&cy.fit(null,40);
 document.getElementById("relayout").onclick=()=>{ if(cy) cy.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60}).run(); };
 function showModal(html){ document.getElementById("modalbody").innerHTML=html; document.getElementById("modal").style.display="flex"; }
