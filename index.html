@@ -4547,6 +4547,7 @@ async function doBuild(){
     if(typeof cytoscape==="undefined"){ showErr("Cytoscape not loaded; cannot draw."); return; }
     const showMols=document.getElementById("showMols").checked;
     MERGE_ON={ mf:document.getElementById("mON").checked, bp:document.getElementById("bON").checked, cc:document.getElementById("cON").checked };
+    loaded.slice().sort().forEach(m=>{ if(!MCOL[m]) MCOL[m]=palette[Object.keys(MCOL).length % palette.length]; });   // give each model its own colour (for "colour by model")
     const g=buildGraph(loaded,currentMode(),showMols);
     render(g,loaded);
     renderCacheList(loaded);
