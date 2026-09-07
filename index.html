@@ -3992,8 +3992,11 @@ function showErr(msg){
   const e=document.getElementById("err");
   if(e){ e.style.display="block"; e.textContent="⚠ "+msg; }
 }
-window.addEventListener("error",ev=>showErr((ev.message||"error")+ (ev.filename?("  @"+ev.lineno+":"+ev.colno):"")));
-window.addEventListener("unhandledrejection",ev=>showErr("promise: "+(ev.reason&&ev.reason.message||ev.reason)));
+// benign when the page is embedded in a cross-origin frame (e.g. a JupyterLab-hosted tab):
+// a library probes window.top/parent; it doesn't affect the app. Don't alarm the user.
+function benignXorigin(m){ return /cross-origin|Permission denied to access property|SecurityError|accessing a cross-origin frame/i.test(String(m||"")); }
+window.addEventListener("error",ev=>{ if(benignXorigin(ev.message)) return; showErr((ev.message||"error")+ (ev.filename?("  @"+ev.lineno+":"+ev.colno):"")); });
+window.addEventListener("unhandledrejection",ev=>{ const m=(ev.reason&&ev.reason.message)||ev.reason; if(benignXorigin(m)) return; showErr("promise: "+m); });
 if(typeof cytoscape==="undefined"){ showErr("Cytoscape library did not load — the graph engine is unavailable in this browser context."); }
 </script>
 <script>
