@@ -4152,7 +4152,7 @@ function buildGraph(selectedIds, mode, showMols){
       nodes[nid] = {id:nid, sig:intrinsicKey(a), gp:a.gp, gp_id:a.gp_id, is_complex:a.is_complex,
         complex_parts:a.complex_parts, complex_part_ids:a.complex_part_ids,
         mf:a.mf, mf_id:a.mf_id, bp:a.bp, bp_id:a.bp_id,
-        cc:a.cc, cc_id:a.cc_id, mols:[], models:[]};
+        cc:a.cc, cc_id:a.cc_id, cell:a.cell, cell_id:a.cell_id, mols:[], models:[]};
     }
     const n = nodes[nid];
     if(!n.models.includes(mid)) n.models.push(mid);
@@ -4203,7 +4203,7 @@ function buildGraph(selectedIds, mode, showMols){
         const grp=find(slotId(anode,term,pred));
         const mnid="m_"+grp.replace(/[^a-zA-Z0-9]/g,"_");
         if(!molNodes[mnid]) molNodes[mnid]={id:mnid, sig:mnid, is_mol:true, gp:label, gp_id:term,
-          is_complex:false, complex_parts:[], complex_part_ids:[], mf:"", mf_id:"", bp:"", bp_id:"", cc:"", cc_id:"",
+          is_complex:false, complex_parts:[], complex_part_ids:[], mf:"", mf_id:"", bp:"", bp_id:"", cc:"", cc_id:"", cell:"", cell_id:"",
           mols:[], models:[], bridge:false};
         if(!molNodes[mnid].models.includes(mid)) molNodes[mnid].models.push(mid);
         let src, tgt, cls;
@@ -4335,6 +4335,7 @@ function wireInteractions(){
       `<div class="row"><span class="k" title="molecular function">MF</span>${n.mf||"<span class='sub'>(none)</span>"} <span class="mono">${n.mf_id||""}</span></div>`+
       `<div class="row"><span class="k" title="biological process (part_of)">BP</span>${n.bp||"<span class='sub'>(none)</span>"} <span class="mono">${n.bp_id||""}</span></div>`+
       `<div class="row"><span class="k" title="cellular component (occurs_in)">CC</span>${n.cc||"<span class='sub'>(none)</span>"} <span class="mono">${n.cc_id||""}</span></div>`+
+      (n.cell?`<div class="row"><span class="k" title="cell / anatomy the CC is part_of">cell</span>${n.cell} <span class="mono">${n.cell_id||""}</span></div>`:"")+
       `<div class="row" style="margin-top:6px"><span class="k" title="molecular inputs / outputs / regulators">in/out</span>${mols}</div>`+
       `<div class="row" style="margin-top:6px"><span class="k" title="activities this one causally acts on">regulates</span>${downstream}</div>`+
       `<div class="row" style="margin-top:6px"><span class="k">in models</span>${models}`+(n.bridge?` <b style="color:#c98a00">↔ bridge</b>`:"")+`</div>`+
@@ -4401,20 +4402,21 @@ function minervaToRecord(mid, m){
     const outs=bySub[i.id]||[];
     if(!outs.some(f=>f.property===_EB)) continue;
     const self=clsOf(i.id);
-    let gp=null,gp_id=null,is_complex=false,complex_parts=[],complex_part_ids=[],bp=null,bp_id=null,cc=null,cc_id=null;
+    let gp=null,gp_id=null,is_complex=false,complex_parts=[],complex_part_ids=[],bp=null,bp_id=null,cc=null,cc_id=null,cell=null,cell_id=null;
     const mols=[],edges=[];
     for(const f of outs){ const p=f.property,tgt=f.object;
       if(p===_EB){ const c=clsOf(tgt); gp=c.label; gp_id=c.id;
         const parts=(bySub[tgt]||[]).filter(x=>x.property===_HP).map(x=>clsOf(x.object));
         is_complex=parts.length>0; complex_parts=parts.map(x=>x.label); complex_part_ids=parts.map(x=>x.id).sort(); }
       else if(p===_PO && bp_id===null){ const c=clsOf(tgt); bp=c.label; bp_id=c.id; }
-      else if(p===_OI && cc_id===null){ const c=clsOf(tgt); cc=c.label; cc_id=c.id; }
+      else if(p===_OI && cc_id===null){ const c=clsOf(tgt); cc=c.label; cc_id=c.id;
+        const cpo=(bySub[tgt]||[]).filter(x=>x.property===_PO); if(cpo.length){ const cc2=clsOf(cpo[0].object); cell=cc2.label; cell_id=cc2.id; } }   // the cell/anatomy the CC is part_of
       else if(_MOLPRED[p]){ const c=clsOf(tgt); mols.push([_MOLPRED[p],c.label,c.id,tgt]); }
       else if(_CAUSAL[p]){ const cz=_CAUSAL[p]; edges.push({cls:cz[1],label:cz[0],downstream:tgt}); }
     }
     for(const em of (extraMols[i.id]||[])) mols.push(em);
     activities.push({local_id:i.id,gp,gp_id,is_complex,complex_parts,complex_part_ids,
-      mf:self.label,mf_id:self.id,bp,bp_id,cc,cc_id,mols,edges});
+      mf:self.label,mf_id:self.id,bp,bp_id,cc,cc_id,cell,cell_id,mols,edges});
   }
   return {id:mid,title,status,activities};
 }
