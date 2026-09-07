@@ -3965,8 +3965,8 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <h2>Colours</h2>
       <div class="row">default scheme:
         <select id="colorBy">
-          <option value="model" selected>by model</option>
-          <option value="bridge">bridge / single</option>
+          <option value="bridge" selected>bridge / single</option>
+          <option value="model">by model</option>
         </select>
         <button id="clearcol">reset all</button>
       </div>
@@ -4005,7 +4005,7 @@ const palette = ["#e76f51","#2a9d8f","#e9c46a","#8ab17d","#e07a5f","#6d597a","#4
 const MCOL = {}; Object.keys(CACHE).sort().forEach((m,i)=>MCOL[m]=palette[i%palette.length]);
 const ECOL = {pos:"#2e8b57", neg:"#c0392b", input:"#888888", mol:"#7a97a8"};
 let cy = null;
-let colorBy = "model";  // default scheme: one distinct colour per model  (alt: "bridge" = bridge/single)
+let colorBy = "bridge";  // default scheme on first build: bridge/single  (alt: "model" = one colour per model)
 
 // --- persisted free colour overrides, keyed by unit signature ---
 function lsGet(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch(e){ return d; } }
