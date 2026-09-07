@@ -4237,7 +4237,7 @@ function flash(msg){
 
 // --- render ---
 function render(g, selectedIds){
-  const savedPos = PENDING_LAYOUT || loadLayout(selectedIds) || DEFAULT_STATE.layout || null;
+  const savedPos = PENDING_LAYOUT || DEFAULT_STATE.layout || null;   // Build always auto-lays-out; saved layouts apply only via "load layout"
   const els=[];
   function estHeight(n){ // rough box height so the HTML label fits (name big, MF small)
     const nameLines=Math.max(1,Math.ceil((n.gp||"").length/16));
