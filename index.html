@@ -4558,22 +4558,27 @@ document.getElementById("fit").onclick=()=>cy&&cy.fit(null,40);
 function zoomByF(f){ if(!cy) return; const z=Math.max(0.05,Math.min(4,cy.zoom()*f)); cy.zoom({level:z,renderedPosition:{x:cy.width()/2,y:cy.height()/2}}); }
 document.getElementById("zoomin").onclick=()=>zoomByF(1.2);
 document.getElementById("zoomout").onclick=()=>zoomByF(1/1.2);
-// lay out each disconnected cluster separately, then tile them side-by-side so
-// independent models don't overlap (top-aligned columns with a gap)
-function autoLayout(){
+// after dagre lays out the whole graph, spread the disconnected clusters into
+// side-by-side, top-aligned columns so independent models don't overlap
+function tileComponents(){
   if(!cy) return;
   const comps=cy.elements().components();
   comps.sort((a,b)=>b.nodes().length-a.nodes().length);
-  const gap=100; let x=0;
+  const gap=120; let x=0;
   comps.forEach(comp=>{
     const nodes=comp.nodes(); if(!nodes.length) return;
-    comp.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false}).run();
     const bb=nodes.boundingBox();
     const dx=x-bb.x1, dy=-bb.y1;
     nodes.forEach(n=>{ const p=n.position(); n.position({x:p.x+dx, y:p.y+dy}); });
     x += bb.w + gap;
   });
   cy.fit(null,40);
+}
+function autoLayout(){
+  if(!cy) return;
+  const l=cy.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false});
+  l.one("layoutstop", tileComponents);   // tile only AFTER dagre has applied positions
+  l.run();
 }
 document.getElementById("relayout").onclick=()=>autoLayout();
 function showModal(html){ document.getElementById("modalbody").innerHTML=html; document.getElementById("modal").style.display="flex"; }
