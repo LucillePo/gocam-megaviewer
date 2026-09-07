@@ -4156,7 +4156,7 @@ function buildGraph(selectedIds, mode, showMols){
     }
     const n = nodes[nid];
     if(!n.models.includes(mid)) n.models.push(mid);
-    (a.mols||[]).forEach(x=>{ const tag=x[0]+": "+x[1]; if(!n.mols.some(y=>y[0]===x[0]&&y[1]===x[1])) n.mols.push([x[0],x[1]]); });
+    (a.mols||[]).forEach(x=>{ if(!n.mols.some(y=>y[0]===x[0]&&y[1]===x[1])) n.mols.push([x[0],x[1],x[2]]); });   // keep the term id (x[2]) too
   });
 
   const edges = {};
@@ -4323,7 +4323,10 @@ function wireInteractions(){
         `<div class="row sub">molecule (input/output of activities)</div>`;
       return;
     }
-    const mols=(n.mols||[]).map(m=>`<span class="tag">${m[0]}: ${m[1]}</span>`).join(" ")||"<span class='sub'>none</span>";
+    const mols=(n.mols||[]).map(m=>`<span class="tag">${m[0]}: ${m[1]}${m[2]?` <span class="mono">${m[2]}</span>`:""}</span>`).join(" ")||"<span class='sub'>none</span>";
+    let downstream="<span class='sub'>none</span>";
+    try{ const outs=evt.target.outgoers("edge").filter(e=>e.data("cls")!=="mol");
+      if(outs.length) downstream=outs.map(e=>{ const t=e.target().data(); return `<span class="tag">${e.data("label")} &rarr; ${t.gp||t.mf||"?"}${t.mf_id?` <span class="mono">${t.mf_id}</span>`:""}</span>`; }).join(" "); }catch(e){}
     const models=(n.models||[]).map(id=>`<span class="tag model" data-m="${id}"><span class="mono">${id.split(':')[1]}</span></span>`).join(" ");
     document.getElementById("detail").innerHTML=
       `<h1>${n.is_complex?"⬡ ":""}${n.gp||"?"}</h1>`+
@@ -4332,8 +4335,9 @@ function wireInteractions(){
       `<div class="row"><span class="k" title="molecular function">MF</span>${n.mf||"<span class='sub'>(none)</span>"} <span class="mono">${n.mf_id||""}</span></div>`+
       `<div class="row"><span class="k" title="biological process (part_of)">BP</span>${n.bp||"<span class='sub'>(none)</span>"} <span class="mono">${n.bp_id||""}</span></div>`+
       `<div class="row"><span class="k" title="cellular component (occurs_in)">CC</span>${n.cc||"<span class='sub'>(none)</span>"} <span class="mono">${n.cc_id||""}</span></div>`+
-      `<div class="row" style="margin-top:6px"><span class="k">mols</span>${mols}</div>`+
-      `<div class="row" style="margin-top:6px"><span class="k">in</span>${models}`+(n.bridge?` <b style="color:#c98a00">↔ bridge</b>`:"")+`</div>`+
+      `<div class="row" style="margin-top:6px"><span class="k" title="molecular inputs / outputs / regulators">in/out</span>${mols}</div>`+
+      `<div class="row" style="margin-top:6px"><span class="k" title="activities this one causally acts on">regulates</span>${downstream}</div>`+
+      `<div class="row" style="margin-top:6px"><span class="k">in models</span>${models}`+(n.bridge?` <b style="color:#c98a00">↔ bridge</b>`:"")+`</div>`+
       `<div class="row" style="margin-top:8px"><span class="k">colour</span>`+
         `<input type="color" id="unitcol" value="${OVERRIDE[n.sig]||schemeFill(evt.target)}"> `+
         `<button id="unitsave">★ save colour</button> <button id="unitreset">reset</button>`+
