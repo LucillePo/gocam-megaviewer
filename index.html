@@ -4093,7 +4093,7 @@ function renderModelTags(loaded){
   el.innerHTML = loaded.map(mid=>{
     const h=mid.split(':')[1];
     return `<div class="row" style="display:flex;align-items:center;gap:6px">`
-      +`<input type="color" data-m="${mid}" class="mcol" value="#3f8fd0">`
+      +`<input type="color" data-m="${mid}" class="mcol" value="${MCOL[mid]||'#3f8fd0'}">`
       +`<span class="mono" style="flex:1">${h}</span>`
       +`<button data-m="${mid}" class="mclear" style="padding:1px 5px">reset</button></div>`;
   }).join("");
