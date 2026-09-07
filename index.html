@@ -3941,6 +3941,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <button id="zoomout" title="zoom out">&minus;</button>
       <button id="relayout">auto-layout</button>
       <button id="savelayout">save layout</button>
+      <button id="loadlayout" title="paste a saved layout to rebuild its exact graph">load layout</button>
       <button id="png">PNG</button>
       <span id="stats"></span>
     </div>
@@ -4010,6 +4011,7 @@ const DEFAULT_STATE = {};     // baked-in layout/colours/scheme (from layout.jso
 let OVERRIDE = Object.assign({}, DEFAULT_STATE.colors || {});   // start clean each session (no localStorage auto-load)
 let PALETTE  = (DEFAULT_STATE.palette || []).slice();           // "My colours" — blank unless added this session
 let MERGE_ON = {mf:true, bp:true, cc:true};   // which GO aspects count toward merging (user-toggleable filter)
+let PENDING_LAYOUT = null;   // saved positions to apply on the next build (from a restored layout), instead of auto-layout
 let selectedSig = null;                       // sig of the currently clicked unit
 if(DEFAULT_STATE.scheme) colorBy = DEFAULT_STATE.scheme;
 
@@ -4235,7 +4237,7 @@ function flash(msg){
 
 // --- render ---
 function render(g, selectedIds){
-  const savedPos = loadLayout(selectedIds) || DEFAULT_STATE.layout || null;
+  const savedPos = PENDING_LAYOUT || loadLayout(selectedIds) || DEFAULT_STATE.layout || null;
   const els=[];
   function estHeight(n){ // rough box height so the HTML label fits (name big, MF small)
     const nameLines=Math.max(1,Math.ceil((n.gp||"").length/16));
@@ -4293,6 +4295,7 @@ function render(g, selectedIds){
   } else {
     autoLayout();
   }
+  PENDING_LAYOUT=null;   // one-shot: consumed by this build only
 
   wireInteractions();
   renderModelTags(selectedIds);
@@ -4635,19 +4638,38 @@ function applyState(s){
   if(s.layout){ cy.nodes().forEach(n=>{ const p=s.layout[n.data("sig")]; if(p) n.position(p); }); cy.fit(null,40); }
   applyColors();
 }
+
+// full restore: rebuild the saved models (if the blob carries IDs) then apply layout+colours
+async function restoreState(s){
+  if(!s || typeof s!=="object") throw new Error("bad state");
+  if(s.scheme){ colorBy=s.scheme; const sel=document.getElementById("colorBy"); if(sel) sel.value=s.scheme; }
+  if(s.colors) OVERRIDE=Object.assign({}, s.colors);
+  if(s.palette){ PALETTE=s.palette.slice(); renderPalette(); }
+  if(s.merge){ const m=document.getElementById("mON"),b=document.getElementById("bON"),c=document.getElementById("cON");
+    if(m) m.checked=!!s.merge.mf; if(b) b.checked=!!s.merge.bp; if(c) c.checked=!!s.merge.cc; }
+  if(s.mode){ const r=document.querySelector('input[name=mode][value="'+s.mode+'"]'); if(r) r.checked=true; }
+  if(Array.isArray(s.ids) && s.ids.length){
+    document.getElementById("ids").value = s.ids.map(id=>String(id).startsWith("gomodel:")?id:"gomodel:"+id).join("\n");
+    PENDING_LAYOUT = s.layout || null;      // render() will use these positions instead of auto-layout
+    await doBuild();                        // fetch + build the models
+  } else if(s.layout && cy){
+    cy.nodes().forEach(n=>{ const p=s.layout[n.data("sig")]; if(p) n.position(p); }); cy.fit(null,40);
+  }
+  applyColors();
+}
 document.getElementById("savelayout").onclick=()=>{
   if(!cy) return;
   const ids=currentIds().filter(id=>CACHE[id]);
   const pos={}; cy.nodes().forEach(n=>{ pos[n.data("sig")]=n.position(); });
-  const blob=JSON.stringify({v:1, layout:pos, colors:OVERRIDE, scheme:colorBy, palette:PALETTE});
+  const blob=JSON.stringify({v:2, ids:ids, merge:MERGE_ON, mode:currentMode(), layout:pos, colors:OVERRIDE, scheme:colorBy, palette:PALETTE});
   let saved=false;
   try{ localStorage.setItem(layoutKey(ids),JSON.stringify(pos)); lsSet("gocam-colors",OVERRIDE); saved=true; }catch(e){}
   showModal('<h1 style="font-size:15px;margin:0 0 6px">Save / restore layout &amp; colours</h1>'
     +'<div class="sub" style="margin-bottom:6px">'
-      +(saved?'Saved in this browser (may not survive Jupyter\'s sandbox). ':'')
-      +'To keep it <b>permanently</b>: copy the text below, save it as '
-      +'<span class="mono">gocam-viewer/layout.json</span>, and rebuild — the app then opens '
-      +'with this layout every time. (Or paste it back here and Apply to restore now.)</div>'
+      +'Copy this text. On <b>any</b> page (even a fresh one), click <b>load layout</b> and paste it — '
+      +'it rebuilds these exact models with this layout &amp; colours. '
+      +(saved?'(Also remembered in this browser for this model set.) ':'')
+      +'To make it the permanent default, save it as <span class="mono">gocam-viewer/layout.json</span> and rebuild.</div>'
     +'<textarea id="stateout" readonly rows="6">'+blob.replace(/</g,"&lt;")+'</textarea>'
     +'<div style="margin:6px 0"><button id="copystate">copy</button> <span id="modalmsg"></span></div>'
     +'<div class="sub" style="margin-top:8px">Restore — paste saved text and Apply:</div>'
@@ -4658,9 +4680,21 @@ document.getElementById("savelayout").onclick=()=>{
     let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
     document.getElementById("modalmsg").textContent = ok ? "copied ✓" : "select the text and copy manually";
   };
-  document.getElementById("applystate").onclick=()=>{
-    try{ applyState(JSON.parse(document.getElementById("statein").value)); document.getElementById("modal").style.display="none"; }
+  document.getElementById("applystate").onclick=async()=>{
+    try{ await restoreState(JSON.parse(document.getElementById("statein").value)); document.getElementById("modal").style.display="none"; }
     catch(e){ document.getElementById("modalmsg").style.color="#b5480f"; document.getElementById("modalmsg").textContent="couldn't read that text"; }
+  };
+};
+// load layout: available even on an empty page — paste a saved blob to rebuild its graph
+document.getElementById("loadlayout").onclick=()=>{
+  showModal('<h1 style="font-size:15px;margin:0 0 6px">Load a saved layout</h1>'
+    +'<div class="sub" style="margin-bottom:6px">Paste text from a previous <b>save layout</b>. It rebuilds those models with the saved layout &amp; colours.</div>'
+    +'<textarea id="statein" rows="6" placeholder="paste saved layout text here…"></textarea>'
+    +'<div style="margin-top:6px"><button id="applystate">load</button> <span id="modalmsg"></span></div>');
+  document.getElementById("applystate").onclick=async()=>{
+    const msg=document.getElementById("modalmsg");
+    try{ msg.style.color=""; msg.textContent="loading…"; await restoreState(JSON.parse(document.getElementById("statein").value)); document.getElementById("modal").style.display="none"; }
+    catch(e){ msg.style.color="#b5480f"; msg.textContent="couldn't read that text"; }
   };
 };
 document.getElementById("q").addEventListener("input",e=>{
