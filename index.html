@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:43</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:52</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3955,10 +3955,10 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <div><span class="swatch" style="border-top-color:#c0392b"></span> negatively regulates</div>
       <div><span class="swatch" style="border-top-color:#888"></span> provides input for</div>
       <div><span class="swatch" style="border-top-color:#7a97a8;border-top-style:dashed"></span> input / output (molecule)</div>
-      <div style="margin-top:6px"><span class="dot" style="background:#ffd166;border-color:#e0a800"></span> bridges &gt;1 model</div>
+      <div style="margin-top:6px"><span class="dot" style="background:#ffd166;border-color:#a67400"></span> bridges &gt;1 model</div>
       <div><span class="dot" style="background:#eaf6e6;border-color:#8ab17d"></span> molecule</div>
-      <div><span class="dot" style="background:#dcecff;border-color:#5a9bd8"></span> single model</div>
-      <div><span class="dot" style="background:#eae0ff;border-color:#7a5bd8"></span> protein complex</div>
+      <div><span class="dot" style="background:#dcecff;border-color:#2a63a8"></span> single model</div>
+      <div><span class="dot" style="background:#eae0ff;border-color:#5537a8"></span> protein complex</div>
     </div>
     <div id="cats" style="display:none">
       <h2>Colours</h2>
@@ -4056,7 +4056,7 @@ function restoreSnap(s){
 function undo(){ if(!HISTORY.length){ flash("nothing to undo"); return; } restoreSnap(HISTORY.pop()); flash("reverted"); }
 
 function darken(hex,f){   // return a slightly darker shade of a #rrggbb colour
-  f = (f===undefined) ? 0.68 : f;
+  f = (f===undefined) ? 0.52 : f;   // darker outlines (2026-09-22)
   const m=/^#?([0-9a-fA-F]{6})$/.exec(hex||""); if(!m) return "#3a4a5a";
   const n=parseInt(m[1],16);
   const r=Math.round(((n>>16)&255)*f), g=Math.round(((n>>8)&255)*f), b=Math.round((n&255)*f);
@@ -4075,7 +4075,7 @@ function nodeStroke(n){
   const o=OVERRIDE[n.data("sig")];
   if(o) return darken(o);                              // darker shade of the chosen colour
   if(colorBy==="model") return darken(schemeFill(n));
-  return n.data("is_complex")?"#7a5bd8":(n.data("bridge")?"#e0a800":"#5a9bd8");
+  return n.data("is_complex")?"#5537a8":(n.data("bridge")?"#a67400":"#2a63a8");
 }
 function applyColors(){
   if(!cy) return;
@@ -4244,9 +4244,9 @@ function render(g, selectedIds){
   const savedPos = PENDING_LAYOUT || DEFAULT_STATE.layout || null;   // Build always auto-lays-out; saved layouts apply only via "load layout"
   const els=[];
   function estHeight(n){ // rough box height so the HTML label fits (name big, MF small)
-    const nameLines=Math.max(1,Math.ceil((n.gp||"").length/16));   // Arial bold 20px ≈ 16 chars per 208px line
+    const nameLines=Math.max(1,Math.ceil((n.gp||"").length/13));   // Arial bold 24px ≈ 13 chars per 208px line
     const mfLines = n.mf ? Math.max(1,Math.ceil(n.mf.length/17)) : 0;   // Arial 18px ≈ 17 chars/line
-    return Math.max(62, nameLines*25 + mfLines*23 + 22);
+    return Math.max(66, nameLines*29 + mfLines*23 + 22);
   }
   g.nodes.forEach(n=>els.push({data:{...n, label:(n.gp||"")+(n.mf?("\n"+n.mf):""), h:estHeight(n)}}));
   g.edges.forEach(e=>els.push({data:{id:e.id,source:e.source,target:e.target,label:e.label,cls:e.cls,models:e.models}}));
@@ -4258,8 +4258,8 @@ function render(g, selectedIds){
       {selector:"node[!is_mol]",style:{
         "label":"","width":"224px","height":"data(h)","shape":"round-rectangle",
         "background-color":e=>e.data("is_complex")?"#eae0ff":(e.data("bridge")?"#ffd166":"#dcecff"),
-        "border-width":e=>e.data("bridge")?3:1.5,
-        "border-color":e=>e.data("is_complex")?"#7a5bd8":(e.data("bridge")?"#e0a800":"#5a9bd8"),
+        "border-width":e=>e.data("bridge")?2:1,
+        "border-color":e=>e.data("is_complex")?"#5537a8":(e.data("bridge")?"#a67400":"#2a63a8"),
         "padding":"6px"}},
       {selector:"node[?is_mol]",style:{
         "label":"data(gp)","text-wrap":"wrap","text-valign":"center","text-halign":"center",
@@ -4286,7 +4286,7 @@ function render(g, selectedIds){
         const gp=(d.gp||"").replace(/</g,"&lt;");
         const mf=(d.mf||"").replace(/</g,"&lt;");
         return '<div style="width:208px;text-align:center;pointer-events:none;font-family:Arial,Helvetica,&quot;Liberation Sans&quot;,sans-serif">'
-          +'<div style="font-size:20px;font-weight:700;line-height:1.15;color:#0b1220">'+gp+'</div>'
+          +'<div style="font-size:24px;font-weight:700;line-height:1.15;color:#0b1220">'+gp+'</div>'
           +(mf?'<div style="font-size:18px;line-height:1.2;color:#0b1220;margin-top:3px">'+mf+'</div>':'')
           +'</div>';
       }
@@ -4691,7 +4691,7 @@ document.getElementById("png").onclick=()=>{
   // Keep the boxes EXACTLY as the viewer draws them (same size + alignment); just
   // overlay the two-tier label (protein name big+bold, MF smaller) since cy.png
   // can't capture the HTML-overlay labels.
-  const scale=4, NF=22, MF=18;   // 4x for print-quality poster export (MF enlarged 2026-09-22 to match on-screen 18/20 ratio)
+  const scale=4, NF=26, MF=18;   // 4x for print-quality poster export (MF enlarged 2026-09-22 to match on-screen 18/20 ratio)
   const bb=cy.elements().boundingBox();
   const base=cy.png({full:true, scale:scale, bg:"#ffffff"});
   const img=new Image();
