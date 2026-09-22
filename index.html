@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:33</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:58</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4245,8 +4245,8 @@ function render(g, selectedIds){
   const els=[];
   function estHeight(n){ // rough box height so the HTML label fits (name big, MF small)
     const nameLines=Math.max(1,Math.ceil((n.gp||"").length/16));
-    const mfLines = n.mf ? Math.max(1,Math.ceil(n.mf.length/20)) : 0;
-    return Math.max(62, nameLines*25 + mfLines*20 + 22);
+    const mfLines = n.mf ? Math.max(1,Math.ceil(n.mf.length/17)) : 0;   // ~17 chars/line at 18px in a 208px box
+    return Math.max(62, nameLines*25 + mfLines*23 + 22);
   }
   g.nodes.forEach(n=>els.push({data:{...n, label:(n.gp||"")+(n.mf?("\n"+n.mf):""), h:estHeight(n)}}));
   g.edges.forEach(e=>els.push({data:{id:e.id,source:e.source,target:e.target,label:e.label,cls:e.cls,models:e.models}}));
@@ -4263,7 +4263,7 @@ function render(g, selectedIds){
         "padding":"6px"}},
       {selector:"node[?is_mol]",style:{
         "label":"data(gp)","text-wrap":"wrap","text-valign":"center","text-halign":"center",
-        "font-size":"16px","text-max-width":"150px","width":"label","height":"label","shape":"ellipse",
+        "font-size":"20px","text-max-width":"180px","width":"label","height":"label","shape":"ellipse",
         "background-color":"#eaf6e6","border-width":1.5,"border-color":"#8ab17d","color":"#1e3524",
         "padding":"12px"}},
       {selector:"edge",style:{
@@ -4287,7 +4287,7 @@ function render(g, selectedIds){
         const mf=(d.mf||"").replace(/</g,"&lt;");
         return '<div style="width:208px;text-align:center;pointer-events:none">'
           +'<div style="font-size:20px;font-weight:700;line-height:1.15;color:#14213d">'+gp+'</div>'
-          +(mf?'<div style="font-size:15px;line-height:1.2;color:#1e2b3d;margin-top:3px">'+mf+'</div>':'')
+          +(mf?'<div style="font-size:18px;line-height:1.2;color:#1e2b3d;margin-top:3px">'+mf+'</div>':'')
           +'</div>';
       }
     }]);
@@ -4645,7 +4645,7 @@ document.getElementById("png").onclick=()=>{
   // Keep the boxes EXACTLY as the viewer draws them (same size + alignment); just
   // overlay the two-tier label (protein name big+bold, MF smaller) since cy.png
   // can't capture the HTML-overlay labels.
-  const scale=4, NF=22, MF=13;   // 4x for print-quality poster export
+  const scale=4, NF=22, MF=18;   // 4x for print-quality poster export (MF enlarged 2026-09-22 to match on-screen 18/20 ratio)
   const bb=cy.elements().boundingBox();
   const base=cy.png({full:true, scale:scale, bg:"#ffffff"});
   const img=new Image();
