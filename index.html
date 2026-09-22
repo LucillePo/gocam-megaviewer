@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:58</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:59</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4267,11 +4267,11 @@ function render(g, selectedIds){
         "background-color":"#eaf6e6","border-width":1.5,"border-color":"#8ab17d","color":"#1e3524",
         "padding":"12px"}},
       {selector:"edge",style:{
-        "curve-style":"bezier","width":e=>e.data("cls")==="mol"?1.5:2,
+        "curve-style":"bezier","width":e=>e.data("cls")==="mol"?2.5:3.5,   // thicker connectors (2026-09-22)
         "line-style":e=>e.data("cls")==="mol"?"dashed":"solid",
         "line-color":e=>ECOL[e.data("cls")]||"#888",
         "target-arrow-color":e=>ECOL[e.data("cls")]||"#888",
-        "target-arrow-shape":e=>e.data("cls")==="neg"?"tee":"triangle","arrow-scale":1.1}},
+        "target-arrow-shape":e=>e.data("cls")==="neg"?"tee":"triangle","arrow-scale":1.7}},
       {selector:".faded",style:{"opacity":0.12}},
       {selector:".hi",style:{"border-color":"#1a1a2e","border-width":4}},
     ],
