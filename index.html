@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:52</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:54</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4661,8 +4661,12 @@ function autoLayout(){
   const sat=cy.nodes("[?is_mol]").filter(m=>m.degree()===1);
   const hosts={};
   sat.forEach(m=>{ const a=m.neighborhood("node")[0]; if(a) (hosts[a.id()]=hosts[a.id()]||[]).push(m); });
+  // side rule (transport reads left->right): INPUTS / activators / inhibitors (edge molecule->activity) on the LEFT,
+  // OUTPUTS (edge activity->molecule) on the RIGHT — e.g. a channel's Ca/Na "in" left, Ca/Na "out" right.
+  const sideOf=m=>{ const e=m.connectedEdges()[0]; return (e && e.source().id()===m.id()) ? -1 : 1; };
   const geom={};   // measured (rendered) sizes, so placement adapts to real label widths/heights
-  Object.entries(hosts).forEach(([id,ms])=>{ const a=cy.getElementById(id); const k=ms.length, perSide=Math.ceil(k/2);
+  Object.entries(hosts).forEach(([id,ms])=>{ const a=cy.getElementById(id); const k=ms.length;
+    const perSide=Math.max(ms.filter(m=>sideOf(m)<0).length, ms.filter(m=>sideOf(m)>0).length);
     const hostW=a.outerWidth(), hostH=a.outerHeight();
     const colW=Math.max(...ms.map(m=>m.outerWidth())), rowH=Math.max(...ms.map(m=>m.outerHeight()))+SAT.GY;
     geom[id]={hostW,colW,rowH,perSide};
@@ -4672,10 +4676,11 @@ function autoLayout(){
   const l=core.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false});
   l.one("layoutstop",()=>{
     Object.entries(hosts).forEach(([id,ms])=>{ const a=cy.getElementById(id), p=a.position(), G=geom[id];
-      const y0=-((G.perSide-1)*G.rowH)/2;
-      ms.forEach((m,i)=>{ const side=(i%2===0)?1:-1, row=Math.floor(i/2);
+      const left=ms.filter(m=>sideOf(m)<0), right=ms.filter(m=>sideOf(m)>0);
+      const place=(list,side)=>{ const y0=-((list.length-1)*G.rowH)/2; list.forEach((m,row)=>{
         const dx=side*(G.hostW/2+SAT.GX+G.colW/2), dy=y0+row*G.rowH;
-        m.position({x:p.x+dx, y:p.y+dy}); m.data("_host",id); m.data("_dx",dx); m.data("_dy",dy); });
+        m.position({x:p.x+dx, y:p.y+dy}); m.data("_host",id); m.data("_dx",dx); m.data("_dy",dy); }); };
+      place(left,-1); place(right,1);
       a.removeStyle("width"); a.removeStyle("height"); });
     tileComponents();   // tile only AFTER dagre has applied positions
   });
