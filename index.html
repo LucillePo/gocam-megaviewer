@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:32</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:33</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3918,9 +3918,6 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <label class="chk"><input type="checkbox" id="mON" checked> MF</label>
       <label class="chk"><input type="checkbox" id="bON" checked> BP</label>
       <label class="chk"><input type="checkbox" id="cON" checked> CC</label>
-    </div>
-    <div class="row" title="Treat a UniProt isoform accession (e.g. Q14028-1) as its canonical protein (Q14028) for merging and QC, so units differing only by isoform suffix merge">
-      <label class="chk"><input type="checkbox" id="isoON"> also merge isoform accession with canonical protein (Q14028-1 = Q14028) &mdash; off: QC flags them instead</label>
     </div>
     <div id="loadwarn"></div>
     <h2>Loaded models <span class="sub" id="ncache"></span></h2>
@@ -4016,8 +4013,8 @@ function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
 const DEFAULT_STATE = {};     // baked-in layout/colours/scheme (from layout.json)
 let OVERRIDE = Object.assign({}, DEFAULT_STATE.colors || {});   // start clean each session (no localStorage auto-load)
 let PALETTE  = (DEFAULT_STATE.palette || []).slice();           // "My colours" — blank unless added this session
-let MERGE_ON = {mf:true, bp:true, cc:true, iso:false};   // iso OFF by default: isoform vs canonical does NOT merge, QC flags it (user's choice 2026-09-22)   // which GO aspects count toward merging (user-toggleable filter); iso = fold isoform accessions into canonical
-const canonId = id => MERGE_ON.iso ? String(id||"").replace(/^(UniProtKB:[A-Z0-9]+)-\d+$/,"$1") : String(id||"");   // UniProtKB:Q14028-1 -> UniProtKB:Q14028
+let MERGE_ON = {mf:true, bp:true, cc:true};   // which GO aspects count toward merging (user-toggleable filter)
+const canonId = id => String(id||"");   // identity: isoform accessions (Q14028-1) are NOT folded into canonical — they never merge, QC flags them (user rule 2026-09-22)
 let PENDING_LAYOUT = null;   // saved positions to apply on the next build (from a restored layout), instead of auto-layout
 let selectedSig = null;                       // sig of the currently clicked unit
 if(DEFAULT_STATE.scheme) colorBy = DEFAULT_STATE.scheme;
@@ -4597,7 +4594,7 @@ async function doBuild(){
     if(!loaded.length){ showErr("None of the "+ids.length+" ID(s) entered could be loaded."); return; }
     if(typeof cytoscape==="undefined"){ showErr("Cytoscape not loaded; cannot draw."); return; }
     const showMols=document.getElementById("showMols").checked;
-    MERGE_ON={ mf:document.getElementById("mON").checked, bp:document.getElementById("bON").checked, cc:document.getElementById("cON").checked, iso:document.getElementById("isoON").checked };
+    MERGE_ON={ mf:document.getElementById("mON").checked, bp:document.getElementById("bON").checked, cc:document.getElementById("cON").checked };
     loaded.slice().sort().forEach(m=>{ if(!MCOL[m]) MCOL[m]=palette[Object.keys(MCOL).length % palette.length]; });   // give each model its own colour (for "colour by model")
     const g=buildGraph(loaded,currentMode(),showMols);
     render(g,loaded);
@@ -4611,7 +4608,7 @@ window.addEventListener("resize",()=>{ if(cy) cy.resize(); });
 
 document.getElementById("build").onclick=doBuild;
 document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=doBuild);
-["mON","bON","cON","isoON"].forEach(id=>{ const e=document.getElementById(id); if(e) e.addEventListener("change",doBuild); });
+["mON","bON","cON"].forEach(id=>{ const e=document.getElementById(id); if(e) e.addEventListener("change",doBuild); });
 document.getElementById("fit").onclick=()=>cy&&cy.fit(null,40);
 function zoomByF(f){ if(!cy) return; const z=Math.max(0.05,Math.min(4,cy.zoom()*f)); cy.zoom({level:z,renderedPosition:{x:cy.width()/2,y:cy.height()/2}}); }
 document.getElementById("zoomin").onclick=()=>zoomByF(1.2);
@@ -4701,8 +4698,7 @@ async function restoreState(s){
   if(s.colors) OVERRIDE=Object.assign({}, s.colors);
   if(s.palette){ PALETTE=s.palette.slice(); renderPalette(); }
   if(s.merge){ const m=document.getElementById("mON"),b=document.getElementById("bON"),c=document.getElementById("cON");
-    if(m) m.checked=!!s.merge.mf; if(b) b.checked=!!s.merge.bp; if(c) c.checked=!!s.merge.cc;
-    const i=document.getElementById("isoON"); if(i && "iso" in s.merge) i.checked=!!s.merge.iso; }
+    if(m) m.checked=!!s.merge.mf; if(b) b.checked=!!s.merge.bp; if(c) c.checked=!!s.merge.cc; }
   if(s.mode){ const r=document.querySelector('input[name=mode][value="'+s.mode+'"]'); if(r) r.checked=true; }
   if(Array.isArray(s.ids) && s.ids.length){
     document.getElementById("ids").value = s.ids.map(id=>String(id).startsWith("gomodel:")?id:"gomodel:"+id).join("\n");
