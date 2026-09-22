@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:30</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:31</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4666,7 +4666,7 @@ function autoLayout(){
     const hostW=a.outerWidth(), hostH=a.outerHeight();
     const colW=Math.max(...ms.map(m=>m.outerWidth())), rowH=Math.max(...ms.map(m=>m.outerHeight()))+SAT.GY;
     geom[id]={hostW,colW,rowH,perSide};
-    const extraW=(k>=1?colW+SAT.GX:0)+(k>=2?colW+SAT.GX:0), needH=perSide*rowH-SAT.GY;
+    const extraW=2*(colW+SAT.GX), needH=perSide*rowH-SAT.GY;   // symmetric: cytoscape centres the widened box, so reserve a full column on BOTH sides even for k=1
     a.style({width:a.width()+extraW, height:Math.max(a.height(), a.height()+(needH-hostH))}); });   // reserve room beside the box for dagre
   const core=cy.elements().not(sat).not(sat.connectedEdges());
   const l=core.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false});
