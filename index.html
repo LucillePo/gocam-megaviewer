@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 08:59</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:04</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3933,7 +3933,6 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
     <div id="err"></div>
     <div class="bar">
       <input id="q" type="search" placeholder="search protein / function / model…"/>
-      <label class="chk"><input type="checkbox" id="showMols" checked> molecules</label>
       <label class="chk"><input type="checkbox" id="onlyBridges"> bridges only</label>
       <button id="undo" title="undo the last change">↶ undo</button>
       <button id="fit">fit</button>
@@ -4593,7 +4592,7 @@ async function doBuild(){
     if(snap.length){ nl.innerHTML += (nl.innerHTML?"<br>":"") + '<span class="sub">&#9432; '+snap.length+' model(s) read from the Noctua DEV server (not on live): '+snap.map(id=>id.replace(/^gomodel:/,"")).join(", ")+'</span>'; }
     if(!loaded.length){ showErr("None of the "+ids.length+" ID(s) entered could be loaded."); return; }
     if(typeof cytoscape==="undefined"){ showErr("Cytoscape not loaded; cannot draw."); return; }
-    const showMols=document.getElementById("showMols").checked;
+    const showMols=true;   // molecules are always shown (checkbox removed at user's request 2026-09-22)
     MERGE_ON={ mf:document.getElementById("mON").checked, bp:document.getElementById("bON").checked, cc:document.getElementById("cON").checked };
     loaded.slice().sort().forEach(m=>{ if(!MCOL[m]) MCOL[m]=palette[Object.keys(MCOL).length % palette.length]; });   // give each model its own colour (for "colour by model")
     const g=buildGraph(loaded,currentMode(),showMols);
@@ -4755,7 +4754,6 @@ document.getElementById("q").addEventListener("input",e=>{
   cy.nodes().forEach(n=>{ const hay=`${n.data("gp")} ${n.data("mf")} ${n.data("bp")} ${n.data("cc")} ${(n.data("models")||[]).join(" ")}`.toLowerCase();
     if(!hay.includes(q)) n.addClass("faded"); else n.addClass("hi"); });
 });
-document.getElementById("showMols").addEventListener("change",doBuild);
 document.getElementById("colorBy").addEventListener("change",e=>{ colorBy=e.target.value; applyColors(); });
 document.getElementById("clearcol").addEventListener("click",clearAllOverrides);
 document.getElementById("palAddBtn").addEventListener("click",()=>{ pushHistory(); addToPalette(document.getElementById("palAdd").value); });
