@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:18</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:30</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4314,6 +4314,8 @@ function render(g, selectedIds){
 }
 
 function wireInteractions(){
+  cy.on("drag","node[!is_mol]",evt=>{ const a=evt.target, p=a.position();   // satellites ride along with their box
+    cy.nodes("[?is_mol]").filter(m=>m.data("_host")===a.id()).forEach(m=>m.position({x:p.x+m.data("_dx"), y:p.y+m.data("_dy")})); });
   cy.on("tap","node",evt=>{
     const n=evt.target.data();
     cy.elements().removeClass("hi faded"); evt.target.addClass("hi");
@@ -4648,10 +4650,35 @@ function tileComponents(){
   });
   cy.fit(null,40);
 }
+// Compact layout (2026-09-22): molecules attached to ONE activity only (degree 1 — a channel's
+// ions, a receptor's ligand…) are NOT given their own dagre slots (that spread activity units far
+// apart); they are placed as "satellites" beside their activity box, alternating right/left and
+// stacking. Shared molecules (degree >= 2, e.g. cGMP between cyclase and channel) stay in dagre
+// as true connectors. Satellites follow their box when it is dragged.
+const SAT={GX:18,GY:12};   // gaps between a box and its satellite molecules / between stacked satellites
 function autoLayout(){
   if(!cy) return;
-  const l=cy.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false});
-  l.one("layoutstop", tileComponents);   // tile only AFTER dagre has applied positions
+  const sat=cy.nodes("[?is_mol]").filter(m=>m.degree()===1);
+  const hosts={};
+  sat.forEach(m=>{ const a=m.neighborhood("node")[0]; if(a) (hosts[a.id()]=hosts[a.id()]||[]).push(m); });
+  const geom={};   // measured (rendered) sizes, so placement adapts to real label widths/heights
+  Object.entries(hosts).forEach(([id,ms])=>{ const a=cy.getElementById(id); const k=ms.length, perSide=Math.ceil(k/2);
+    const hostW=a.outerWidth(), hostH=a.outerHeight();
+    const colW=Math.max(...ms.map(m=>m.outerWidth())), rowH=Math.max(...ms.map(m=>m.outerHeight()))+SAT.GY;
+    geom[id]={hostW,colW,rowH,perSide};
+    const extraW=(k>=1?colW+SAT.GX:0)+(k>=2?colW+SAT.GX:0), needH=perSide*rowH-SAT.GY;
+    a.style({width:a.width()+extraW, height:Math.max(a.height(), a.height()+(needH-hostH))}); });   // reserve room beside the box for dagre
+  const core=cy.elements().not(sat).not(sat.connectedEdges());
+  const l=core.layout({name:"dagre",rankDir:"TB",nodeSep:45,rankSep:60,fit:false,animate:false});
+  l.one("layoutstop",()=>{
+    Object.entries(hosts).forEach(([id,ms])=>{ const a=cy.getElementById(id), p=a.position(), G=geom[id];
+      const y0=-((G.perSide-1)*G.rowH)/2;
+      ms.forEach((m,i)=>{ const side=(i%2===0)?1:-1, row=Math.floor(i/2);
+        const dx=side*(G.hostW/2+SAT.GX+G.colW/2), dy=y0+row*G.rowH;
+        m.position({x:p.x+dx, y:p.y+dy}); m.data("_host",id); m.data("_dx",dx); m.data("_dy",dy); });
+      a.removeStyle("width"); a.removeStyle("height"); });
+    tileComponents();   // tile only AFTER dagre has applied positions
+  });
   l.run();
 }
 document.getElementById("relayout").onclick=()=>autoLayout();
