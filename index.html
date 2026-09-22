@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:41</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-09-22 09:43</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4244,8 +4244,8 @@ function render(g, selectedIds){
   const savedPos = PENDING_LAYOUT || DEFAULT_STATE.layout || null;   // Build always auto-lays-out; saved layouts apply only via "load layout"
   const els=[];
   function estHeight(n){ // rough box height so the HTML label fits (name big, MF small)
-    const nameLines=Math.max(1,Math.ceil((n.gp||"").length/14));   // Verdana bold 19px ≈ 14 chars per 208px line
-    const mfLines = n.mf ? Math.max(1,Math.ceil(n.mf.length/16)) : 0;   // Verdana 17px ≈ 16 chars/line
+    const nameLines=Math.max(1,Math.ceil((n.gp||"").length/16));   // Arial bold 20px ≈ 16 chars per 208px line
+    const mfLines = n.mf ? Math.max(1,Math.ceil(n.mf.length/17)) : 0;   // Arial 18px ≈ 17 chars/line
     return Math.max(62, nameLines*25 + mfLines*23 + 22);
   }
   g.nodes.forEach(n=>els.push({data:{...n, label:(n.gp||"")+(n.mf?("\n"+n.mf):""), h:estHeight(n)}}));
@@ -4263,7 +4263,7 @@ function render(g, selectedIds){
         "padding":"6px"}},
       {selector:"node[?is_mol]",style:{
         "label":"data(gp)","text-wrap":"wrap","text-valign":"center","text-halign":"center",
-        "font-size":"19px","font-family":"Verdana, Tahoma, DejaVu Sans, sans-serif","text-max-width":"180px","width":"label","height":"label","shape":"ellipse",
+        "font-size":"20px","font-family":"Arial, Helvetica, Liberation Sans, sans-serif","text-max-width":"180px","width":"label","height":"label","shape":"ellipse",
         "background-color":"#eaf6e6","border-width":1.5,"border-color":"#8ab17d","color":"#0b1220",
         "padding":"12px"}},
       {selector:"edge",style:{
@@ -4285,9 +4285,9 @@ function render(g, selectedIds){
       tpl:function(d){
         const gp=(d.gp||"").replace(/</g,"&lt;");
         const mf=(d.mf||"").replace(/</g,"&lt;");
-        return '<div style="width:208px;text-align:center;pointer-events:none;font-family:Verdana,Tahoma,&quot;DejaVu Sans&quot;,sans-serif">'
-          +'<div style="font-size:19px;font-weight:700;line-height:1.15;color:#0b1220">'+gp+'</div>'
-          +(mf?'<div style="font-size:17px;line-height:1.2;color:#0b1220;margin-top:3px">'+mf+'</div>':'')
+        return '<div style="width:208px;text-align:center;pointer-events:none;font-family:Arial,Helvetica,&quot;Liberation Sans&quot;,sans-serif">'
+          +'<div style="font-size:20px;font-weight:700;line-height:1.15;color:#0b1220">'+gp+'</div>'
+          +(mf?'<div style="font-size:18px;line-height:1.2;color:#0b1220;margin-top:3px">'+mf+'</div>':'')
           +'</div>';
       }
     }]);
@@ -4711,10 +4711,10 @@ document.getElementById("png").onclick=()=>{
     cy.nodes("[!is_mol]").forEach(n=>{
       const p=n.position(), cx=(p.x-bb.x1)*sx, cyc=(p.y-bb.y1)*sy;
       const maxW=(n.width()-14)*sx;
-      ctx.font="bold "+(NF*scale)+"px Verdana, Tahoma, sans-serif"; const nl=wrap(n.data("gp"),maxW);
-      ctx.font=(MF*scale)+"px Verdana, Tahoma, sans-serif";         const ml=n.data("mf")?wrap(n.data("mf"),maxW):[];
-      const items=nl.map(t=>({t,f:"bold "+(NF*scale)+"px Verdana, Tahoma, sans-serif",lh:NF*scale*1.18,c:"#0b1220"}))
-        .concat(ml.map(t=>({t,f:(MF*scale)+"px Verdana, Tahoma, sans-serif",lh:MF*scale*1.35,c:"#0b1220"})));
+      ctx.font="bold "+(NF*scale)+"px Arial, Helvetica, sans-serif"; const nl=wrap(n.data("gp"),maxW);
+      ctx.font=(MF*scale)+"px Arial, Helvetica, sans-serif";         const ml=n.data("mf")?wrap(n.data("mf"),maxW):[];
+      const items=nl.map(t=>({t,f:"bold "+(NF*scale)+"px Arial, Helvetica, sans-serif",lh:NF*scale*1.18,c:"#0b1220"}))
+        .concat(ml.map(t=>({t,f:(MF*scale)+"px Arial, Helvetica, sans-serif",lh:MF*scale*1.35,c:"#0b1220"})));
       const total=items.reduce((s,i)=>s+i.lh,0); let y=cyc-total/2;
       items.forEach(it=>{ ctx.font=it.f; ctx.fillStyle=it.c; ctx.fillText(it.t,cx,y); y+=it.lh; });
     });
