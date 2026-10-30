@@ -3904,7 +3904,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 13:22</span></h1>
+    <h1>GO-CAM connectivity <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 13:31</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3917,7 +3917,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
     <div class="row" style="margin-top:6px" title="Uncheck an aspect to ignore it when merging — units differing only in that aspect will then merge">Merge requires same:
       <label class="chk"><input type="checkbox" id="mON" checked> MF</label>
       <label class="chk" title="the BP and its whole part_of chain"><input type="checkbox" id="bON" checked> BP (+ part_of chain)</label>
-      <label class="chk"><input type="checkbox" id="cON" checked> CC</label>
+      <label class="chk"><input type="checkbox" id="cON" checked> CC (+ part_of chain)</label>
     </div>
     <div id="loadwarn"></div>
     <h2>Loaded models <span class="sub" id="ncache"></span></h2>
@@ -4122,12 +4122,15 @@ function renderCacheList(ids){
 // "same BP" = same direct BP AND the same part_of chain above it (user 2026-10-30, GUCA1A 6a0784b700000336 vs 6a18a9ba00002973)
 const bpKey = a => [a.bp_id].concat((a.bp_chain||[]).map(c=>c.id)).join(">");
 const bpChainStr = n => [n.bp||n.bp_id||"(none)"].concat((n.bp_chain||[]).map(c=>c.label||c.id)).join(" → ");
+// same for CC: "same CC" = same CC AND the same part_of chain (cell type / anatomy) above it (user 2026-10-30)
+const ccKey = a => [a.cc_id].concat((a.cc_chain||[]).map(c=>c.id)).join(">");
+const ccChainStr = n => [n.cc||n.cc_id||"(none)"].concat((n.cc_chain||[]).map(c=>c.label||c.id)).join(" → ");
 function intrinsicKey(a){
   const eb = a.is_complex ? ("complex:"+a.gp_id+":"+(a.complex_part_ids||[]).map(canonId).sort().join(",")) : ("gp:"+canonId(a.gp_id));
   const parts=[eb];
   if(MERGE_ON.mf) parts.push("mf:"+a.mf_id);
   if(MERGE_ON.bp) parts.push("bp:"+bpKey(a));
-  if(MERGE_ON.cc) parts.push("cc:"+a.cc_id);
+  if(MERGE_ON.cc) parts.push("cc:"+ccKey(a));
   return parts.join("|");
 }
 
@@ -4156,7 +4159,7 @@ function buildGraph(selectedIds, mode, showMols){
     if(!nodes[nid]){
       nodes[nid] = {id:nid, sig:intrinsicKey(a), gp:a.gp, gp_id:a.gp_id, is_complex:a.is_complex,
         complex_parts:a.complex_parts, complex_part_ids:a.complex_part_ids,
-        mf:a.mf, mf_id:a.mf_id, bp:a.bp, bp_id:a.bp_id, bp_key:bpKey(a),
+        mf:a.mf, mf_id:a.mf_id, bp:a.bp, bp_id:a.bp_id, bp_key:bpKey(a), cc_key:ccKey(a),
         cc:a.cc, cc_id:a.cc_id, cell:a.cell, cell_id:a.cell_id, bp_chain:a.bp_chain||[], cc_chain:a.cc_chain||[], prot_io:a.prot_io||[], mols:[], models:[]};
     }
     const n = nodes[nid];
@@ -4524,7 +4527,7 @@ async function runQC(nodes, loaded){
         const A=g[i], B=g[j], d=[];
         if(MERGE_ON.mf && A.mf_id!==B.mf_id) d.push("MF");
         if(MERGE_ON.bp && A.bp_key!==B.bp_key) d.push("BP");   // direct BP or its part_of chain
-        if(MERGE_ON.cc && A.cc_id!==B.cc_id) d.push("CC");
+        if(MERGE_ON.cc && A.cc_key!==B.cc_key) d.push("CC");   // direct CC or its part_of chain
         // composition compared on subunit IDs (not labels): "CNGB1" Q14028 vs Q14028-1 look identical by label but never merge
         const idsA=(A.complex_part_ids||[]).map(canonId).sort(), idsB=(B.complex_part_ids||[]).map(canonId).sort();   // canonId is identity when the isoform toggle is off
         const cxDiff = A.is_complex!==B.is_complex || idsA.join()!==idsB.join();
@@ -4556,13 +4559,16 @@ async function runQC(nodes, loaded){
           rows:p.aspects.map(a=>{ const [idk,lblk]=asp[a];
             if(a==="BP" && A.bp_id===B.bp_id) return {aspect:a, rel:"same BP term, different part_of chain",
               a:{id:A.bp_id, term:bpChainStr(A)}, b:{id:B.bp_id, term:bpChainStr(B)}};
+            if(a==="CC" && A.cc_id===B.cc_id) return {aspect:a, rel:"same CC term, different part_of chain",
+              a:{id:A.cc_id, term:ccChainStr(A)}, b:{id:B.cc_id, term:ccChainStr(B)}};
             const s=subsumption(A[idk], B[idk]);
             return {aspect:a, rel:s?(s.general===A[idk]?"first is parent of second":"first is child of second"):"not parent/child",
                     a:{id:A[idk], term:A[lblk]||A[idk]}, b:{id:B[idk], term:B[lblk]||B[idk]}}; })});
         return;
       }
-      if(p.aspect==="BP" && A.bp_id===B.bp_id){   // same BP term, but its part_of chain differs
-        hits.push({kind:"chain", gp:A.gp||A.gp_id, x:{chain:bpChainStr(A), models:names(A.models), node:A.id}, y:{chain:bpChainStr(B), models:names(B.models), node:B.id}});
+      if((p.aspect==="BP" && A.bp_id===B.bp_id) || (p.aspect==="CC" && A.cc_id===B.cc_id)){   // same term, but its part_of chain differs
+        const cs=p.aspect==="BP"?bpChainStr:ccChainStr;
+        hits.push({kind:"chain", aspect:p.aspect, gp:A.gp||A.gp_id, x:{chain:cs(A), models:names(A.models), node:A.id}, y:{chain:cs(B), models:names(B.models), node:B.id}});
         return;
       }
       const [idk,lblk]=asp[p.aspect];
@@ -4597,7 +4603,7 @@ async function runQC(nodes, loaded){
       if(h.kind==="chain"){
         return '<div class="qcitem" data-a="'+h.x.node+'" data-b="'+h.y.node+'" title="click to highlight both units in the graph" '
           +'style="cursor:pointer;border-left:3px solid #c0392b;background:#fdecea;padding:6px 8px;margin:6px 0;border-radius:4px;color:#333;line-height:1.35">'
-          +'&#9888; <b>'+h.gp+'</b> &mdash; BP part_of chain differs (units did not merge):<br>'
+          +'&#9888; <b>'+h.gp+'</b> &mdash; '+h.aspect+' part_of chain differs (units did not merge):<br>'
           +h.x.chain+'<br>vs '+h.y.chain+'<br>'
           +'<span class="sub">models &mdash; '+h.x.models+'  |  '+h.y.models+'</span><span class="sub"> &middot; click to highlight</span></div>';
       }
