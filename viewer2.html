@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 12:27</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 12:30</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -5124,6 +5124,15 @@ function cellLayout(){
     cols[ci]=bestP; });
   placeAll();
   placeOuter();
+  // a unit with extracellular molecules: its own intracellular molecules go on the OPPOSITE side, so it reads
+  // outside -> unit -> inside (user 2026-10-30)
+  Object.entries(S.hosts).forEach(([id,ms])=>{
+    const h=cy.getElementById(id), hp=h.position(), ext=h.neighborhood("node[?outer]"); if(!ext.length || !ms.length) return;
+    const extSide=Math.sign(ext.reduce((a,m)=>a+m.position().x,0)/ext.length - hp.x) || 1, G=S.geom[id];
+    const y0=-((ms.length-1)*G.rowH)/2;
+    ms.forEach((m,row)=>{ const dx=-extSide*(G.hostW/2+SAT.GX+G.colW/2), dy=y0+row*G.rowH;
+      m.position({x:hp.x+dx, y:hp.y+dy}); m.data("_dx",dx); m.data("_dy",dy); });
+  });
   pushOutExtracellular();
   LAST_LAYOUT_INFO="cell layout: "+countCrossings(coreE)+" crossing(s)";
   cy.fit(null,40);
