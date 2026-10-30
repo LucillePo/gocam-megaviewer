@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-27 10:01</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 12:27</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4435,7 +4435,7 @@ function render(g, selectedIds){
   PENDING_LAYOUT=null;   // one-shot: consumed by this build only
 
   wireInteractions();
-  applyBoxSizes(); setupBoxGrips();
+  applyBoxSizes(); setupBoxGrips(); pushOutExtracellular();
   renderModelTags(selectedIds);
   renderPalette();
   applyColors();
@@ -4458,7 +4458,8 @@ function wireInteractions(){
   cy.on("drag","node[!is_mol]",evt=>{ const a=evt.target, f=a.scratch("_fol"), p0=a.scratch("_p0"); if(!f||!p0) return;
     const p=a.position(), dx=p.x-p0.x, dy=p.y-p0.y;
     f.forEach(o=>{ if(!a.data("is_cell") || !o.m.parent().length) o.m.position({x:o.x+dx, y:o.y+dy}); }); });
-  cy.on("free","node[!is_mol]",evt=>{ evt.target.removeScratch("_fol"); evt.target.removeScratch("_p0"); });
+  cy.on("free","node[!is_mol]",evt=>{ evt.target.removeScratch("_fol"); evt.target.removeScratch("_p0"); pushOutExtracellular(); });
+  cy.on("free","node[?is_mol]",()=>pushOutExtracellular());   // a molecule dropped inside a box is pushed back out
   // no-CL unit dropped onto a cell box -> placed in it (view only). Smallest box under the drop point wins.
   cy.on("free","node[?nocl]",evt=>{
     if(!CELL_ON) return;
@@ -4480,7 +4481,7 @@ function wireInteractions(){
         `<div class="row"><span class="k">units</span>${kids.length} (${kids.filter("[?placed]").length} placed by you)</div>`+
         `<div class="row" style="margin-top:6px"><span class="k">size</span>${BOXSIZE[n.id]?"set by you ":"fits its contents "}`+
         `<button id="boxfit"${BOXSIZE[n.id]?"":" disabled"}>fit to contents</button> <span class="sub">drag the corner grip &#9698; to resize</span></div>`;
-      { const bf=document.getElementById("boxfit"); if(bf) bf.onclick=()=>{ delete BOXSIZE[n.id]; applyBoxSizes(); bf.disabled=true; flash("box fits its contents again"); }; }
+      { const bf=document.getElementById("boxfit"); if(bf) bf.onclick=()=>{ delete BOXSIZE[n.id]; applyBoxSizes(); pushOutExtracellular(); bf.disabled=true; flash("box fits its contents again"); }; }
       return;
     }
     selectedSig = n.is_mol ? null : n.sig;
@@ -4539,6 +4540,25 @@ function applyBoxSizes(){
     if(z) b.style({"min-width":z.w+"px","min-height":z.h+"px","min-width-bias-left":"0%","min-width-bias-right":"100%","min-height-bias-top":"0%","min-height-bias-bottom":"100%"});
     else b.removeStyle("min-width min-height min-width-bias-left min-width-bias-right min-height-bias-top min-height-bias-bottom"); });
 }
+// extracellular molecules (synaptic cleft pool + molecules drawn outside their cell) must never sit inside a cell box:
+// push any that overlaps a box out across that box's nearest edge (user 2026-10-30). A few passes, in case a push
+// lands a molecule in a neighbouring box.
+function pushOutExtracellular(){
+  if(!cy || !CELL_ON) return;
+  const mols=cy.nodes("[?is_mol]").filter(m=>m.data("xzone") || m.data("outer"));
+  if(!mols.length) return;
+  const Bs=cy.nodes("[?is_cell]").filter(b=>!b.parent().length).map(b=>b.boundingBox({includeLabels:false}));
+  const g=OUTGAP/2, hit=(M,dx,dy)=>Bs.find(B=>M.x1+dx<B.x2 && B.x1<M.x2+dx && M.y1+dy<B.y2 && B.y1<M.y2+dy);
+  mols.forEach(m=>{
+    const M=m.boundingBox({includeLabels:false}); if(!hit(M,0,0)) return;
+    // try the 4 directions; in each, keep stepping past whatever box is in the way until clear of ALL boxes
+    const tries=[[-1,0],[1,0],[0,-1],[0,1]].map(([sx,sy])=>{ let dx=0,dy=0;
+      for(let k=0;k<30;k++){ const B=hit(M,dx,dy); if(!B) break;
+        if(sx<0) dx=B.x1-M.x2-g; else if(sx>0) dx=B.x2-M.x1+g; else if(sy<0) dy=B.y1-M.y2-g; else dy=B.y2-M.y1+g; }
+      return {dx,dy,ok:!hit(M,dx,dy)}; }).filter(t=>t.ok).sort((a,c)=>Math.abs(a.dx)+Math.abs(a.dy)-Math.abs(c.dx)-Math.abs(c.dy));
+    if(tries.length){ const p=m.position(); m.position({x:p.x+tries[0].dx, y:p.y+tries[0].dy}); }
+  });
+}
 function setupBoxGrips(){
   document.querySelectorAll(".boxgrip").forEach(g=>g.remove());
   if(!cy || !CELL_ON) return;
@@ -4553,7 +4573,7 @@ function setupBoxGrips(){
       const move=ev=>{ const r=cy.container().getBoundingClientRect(), pan=cy.pan(), z=cy.zoom();
         const mx=(ev.clientX-r.left-pan.x)/z, my=(ev.clientY-r.top-pan.y)/z;
         BOXSIZE[b.id()]={w:Math.max(60,Math.round(mx-bb.x1-2*BOXPAD)), h:Math.max(60,Math.round(my-bb.y1-2*BOXPAD))};
-        applyBoxSizes(); };
+        applyBoxSizes(); pushOutExtracellular(); };
       const up=()=>{ document.removeEventListener("mousemove",move); document.removeEventListener("mouseup",up);
         document.body.style.userSelect=""; document.body.style.cursor=""; };
       document.addEventListener("mousemove",move); document.addEventListener("mouseup",up);
@@ -5104,6 +5124,7 @@ function cellLayout(){
     cols[ci]=bestP; });
   placeAll();
   placeOuter();
+  pushOutExtracellular();
   LAST_LAYOUT_INFO="cell layout: "+countCrossings(coreE)+" crossing(s)";
   cy.fit(null,40);
 }
