@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>GO-CAM model IDs — Phototransduction Mega Viewer</title>
+<style>body{font-family:Arial,Helvetica,sans-serif;max-width:860px;margin:28px auto;padding:0 16px;color:#1b2333}
+h1{font-size:22px;margin-bottom:4px} h2{font-size:17px;margin:0 0 8px} .n{font-weight:normal;color:#667;font-size:13px}
+section{border:1px solid #d6dce8;border-radius:8px;padding:14px 16px;margin:16px 0;background:#fafbfe}
+textarea{width:100%;box-sizing:border-box;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.45;border:1px solid #c8cfdd;border-radius:6px;padding:8px;resize:vertical;background:#fff}
+.bar{margin-top:8px;display:flex;gap:14px;align-items:center} button{font-size:14px;padding:6px 14px;border:1px solid #2a6ef0;background:#2a6ef0;color:#fff;border-radius:6px;cursor:pointer}
+button.ok{background:#1a8a3a;border-color:#1a8a3a} a{color:#2a6ef0} .note{background:#fff6e0;border-left:3px solid #e0a800;padding:6px 10px;font-size:13px;margin:0 0 8px}
+.links{font-size:14px;color:#445}</style></head><body>
+<h1>GO-CAM model IDs</h1><div class="links">Mega Viewer 1: <a href="https://lucillepo.github.io/gocam-megaviewer/" target="_blank">https://lucillepo.github.io/gocam-megaviewer/</a> · Mega Viewer 2: <a href="https://lucillepo.github.io/gocam-megaviewer/viewer2.html" target="_blank">https://lucillepo.github.io/gocam-megaviewer/viewer2.html</a></div>
+<p class="links">This page: <a href="https://lucillepo.github.io/gocam-megaviewer/ids.html" target="_blank">lucillepo.github.io/gocam-megaviewer/ids.html</a>. Copy a list and paste it in the viewer's "Model IDs" box, then click <b>Build graph</b>; or use "Open in …" to build it directly.</p>
+<!--NEWS-->
+<section style="background:#eef7ee;border-color:#b9dcb9"><h2>Viewer 2 — last updated 30 Oct 2026</h2>
+<ul style="margin:4px 0 0 18px;padding:0;font-size:14px;line-height:1.5">
+<li>Intracellular molecules sit on the opposite side of a unit from its extracellular molecules (left ↔ right, above ↔ below).</li>
+<li>Extracellular molecules are always pushed out of cell boxes, also when you enlarge a box.</li>
+<li>PNG export capped at 8,000 px: faster, with a Download PNG button.</li>
+<li>Earlier: cell-type boxes, synaptic-cleft glutamate linking models across cells, sharp molecule names, resizable boxes.</li>
+</ul></section>
+<!--/NEWS-->
+<section><h2>Rod phototransduction (Rod / RHO) <span class="n">7 models</span></h2>
+<textarea id="rod" readonly rows="7">gomodel:6918f23700000035
+gomodel:6a0784b700000502
+gomodel:6a2b236300001621
+gomodel:6a18a9ba00000549
+gomodel:6a7e360900000608
+gomodel:6a4e740f00000478
+gomodel:69ea894900004256</textarea>
+<div class="bar"><button onclick="cp('rod',this)">Copy IDs</button> <a href="https://lucillepo.github.io/gocam-megaviewer/?ids=6918f23700000035,6a0784b700000502,6a2b236300001621,6a18a9ba00000549,6a7e360900000608,6a4e740f00000478,69ea894900004256" target="_blank" rel="noopener">Open in Viewer 1 ↗</a></div></section>
+<section><h2>Cone phototransduction (Cone / OPN1MW) <span class="n">9 models</span></h2>
+<textarea id="cone" readonly rows="9">gomodel:69ea894900003563
+gomodel:6a0784b700000336
+gomodel:6a0784b700005841
+gomodel:6a2b236300001298
+gomodel:6a2b236300001490
+gomodel:6a2b236300000742
+gomodel:6a18a9ba00002973
+gomodel:6a2b236300003566
+gomodel:6a607ed200000208</textarea>
+<div class="bar"><button onclick="cp('cone',this)">Copy IDs</button> <a href="https://lucillepo.github.io/gocam-megaviewer/?ids=69ea894900003563,6a0784b700000336,6a0784b700005841,6a2b236300001298,6a2b236300001490,6a2b236300000742,6a18a9ba00002973,6a2b236300003566,6a607ed200000208" target="_blank" rel="noopener">Open in Viewer 1 ↗</a></div></section>
+<section><h2>Photoreceptor → ON-bipolar synaptic transmission <span class="n">5 models</span></h2>
+<textarea id="syn" readonly rows="5">gomodel:6a6ba88c00000472
+gomodel:6ab067da00005098
+gomodel:6ab067da00002482
+gomodel:6ab067da00010509
+gomodel:6ab067da00008260</textarea>
+<div class="bar"><button onclick="cp('syn',this)">Copy IDs</button> <a href="https://lucillepo.github.io/gocam-megaviewer/viewer2.html?ids=6a6ba88c00000472,6ab067da00005098,6ab067da00002482,6ab067da00010509,6ab067da00008260&amp;src=dev&amp;cell=1" target="_blank" rel="noopener">Open in Viewer 2 (production + dev, by cell type) ↗</a></div></section>
+
+<section><h2>Rod + cone phototransduction, by cell type <span class="n">16 models</span></h2>
+<textarea id="rodcone" readonly rows="16">gomodel:6918f23700000035
+gomodel:6a0784b700000502
+gomodel:6a2b236300001621
+gomodel:6a18a9ba00000549
+gomodel:6a7e360900000608
+gomodel:6a4e740f00000478
+gomodel:69ea894900004256
+gomodel:69ea894900003563
+gomodel:6a0784b700000336
+gomodel:6a0784b700005841
+gomodel:6a2b236300001298
+gomodel:6a2b236300001490
+gomodel:6a2b236300000742
+gomodel:6a18a9ba00002973
+gomodel:6a2b236300003566
+gomodel:6a607ed200000208</textarea>
+<div class="bar"><button onclick="cp('rodcone',this)">Copy IDs</button> <a href="https://lucillepo.github.io/gocam-megaviewer/viewer2.html?ids=6918f23700000035,6a0784b700000502,6a2b236300001621,6a18a9ba00000549,6a7e360900000608,6a4e740f00000478,69ea894900004256,69ea894900003563,6a0784b700000336,6a0784b700005841,6a2b236300001298,6a2b236300001490,6a2b236300000742,6a18a9ba00002973,6a2b236300003566,6a607ed200000208&amp;cell=1" target="_blank" rel="noopener">Open in Viewer 2 (by cell type) ↗</a></div></section>
+<script>function cp(id,b){const t=document.getElementById(id);t.select();t.setSelectionRange(0,99999);
+const done=()=>{b.textContent="Copied ✓";b.classList.add("ok");setTimeout(()=>{b.textContent="Copy IDs";b.classList.remove("ok")},1500)};
+(navigator.clipboard?navigator.clipboard.writeText(t.value).then(done).catch(()=>{document.execCommand("copy");done()}):(document.execCommand("copy"),done()));}</script>
+</body></html>
