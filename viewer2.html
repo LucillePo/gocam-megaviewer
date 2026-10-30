@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 12:30</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 12:33</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4459,7 +4459,8 @@ function wireInteractions(){
     const p=a.position(), dx=p.x-p0.x, dy=p.y-p0.y;
     f.forEach(o=>{ if(!a.data("is_cell") || !o.m.parent().length) o.m.position({x:o.x+dx, y:o.y+dy}); }); });
   cy.on("free","node[!is_mol]",evt=>{ evt.target.removeScratch("_fol"); evt.target.removeScratch("_p0"); pushOutExtracellular(); });
-  cy.on("free","node[?is_mol]",()=>pushOutExtracellular());   // a molecule dropped inside a box is pushed back out
+  cy.on("free","node[?is_mol]",evt=>{ pushOutExtracellular();   // a molecule dropped inside a box is pushed back out
+    const m=evt.target; if(m.data("outer")||m.data("xzone")) orientIntra(m.neighborhood("node[!is_mol][!is_cell]")); });
   // no-CL unit dropped onto a cell box -> placed in it (view only). Smallest box under the drop point wins.
   cy.on("free","node[?nocl]",evt=>{
     if(!CELL_ON) return;
@@ -4548,6 +4549,7 @@ function pushOutExtracellular(){
   const mols=cy.nodes("[?is_mol]").filter(m=>m.data("xzone") || m.data("outer"));
   if(!mols.length) return;
   const Bs=cy.nodes("[?is_cell]").filter(b=>!b.parent().length).map(b=>b.boundingBox({includeLabels:false}));
+  let moved=cy.collection();
   const g=OUTGAP/2, hit=(M,dx,dy)=>Bs.find(B=>M.x1+dx<B.x2 && B.x1<M.x2+dx && M.y1+dy<B.y2 && B.y1<M.y2+dy);
   mols.forEach(m=>{
     const M=m.boundingBox({includeLabels:false}); if(!hit(M,0,0)) return;
@@ -4556,7 +4558,26 @@ function pushOutExtracellular(){
       for(let k=0;k<30;k++){ const B=hit(M,dx,dy); if(!B) break;
         if(sx<0) dx=B.x1-M.x2-g; else if(sx>0) dx=B.x2-M.x1+g; else if(sy<0) dy=B.y1-M.y2-g; else dy=B.y2-M.y1+g; }
       return {dx,dy,ok:!hit(M,dx,dy)}; }).filter(t=>t.ok).sort((a,c)=>Math.abs(a.dx)+Math.abs(a.dy)-Math.abs(c.dx)-Math.abs(c.dy));
-    if(tries.length){ const p=m.position(); m.position({x:p.x+tries[0].dx, y:p.y+tries[0].dy}); }
+    if(tries.length){ const p=m.position(); m.position({x:p.x+tries[0].dx, y:p.y+tries[0].dy}); moved=moved.union(m); }
+  });
+  if(moved.length) orientIntra(moved.neighborhood("node[!is_mol][!is_cell]"));
+}
+// a unit with extracellular molecules: its own intracellular molecules (those touching only this unit) go on the
+// OPPOSITE side of the unit: extracellular left -> intracellular right, above -> below, ... (user 2026-10-30)
+function orientIntra(units){
+  if(!cy || !CELL_ON) return;
+  units.forEach(h=>{
+    const ext=h.neighborhood("node[?is_mol]").filter(m=>m.data("outer")||m.data("xzone")); if(!ext.length) return;
+    const ins=h.neighborhood("node[?is_mol]").filter(m=>m.degree()===1 && !m.data("outer") && !m.data("xzone")); if(!ins.length) return;
+    const hp=h.position(), vx=ext.reduce((a,m)=>a+m.position().x,0)/ext.length-hp.x, vy=ext.reduce((a,m)=>a+m.position().y,0)/ext.length-hp.y;
+    const hw=h.outerWidth()/2, hh=h.outerHeight()/2, ws=ins.map(m=>m.outerWidth()), hs=ins.map(m=>m.outerHeight());
+    if(Math.abs(vx)>=Math.abs(vy)){   // extracellular left/right -> a column on the other side
+      const side=vx>0?-1:1, colW=Math.max(...ws), rowH=Math.max(...hs)+SAT.GY, y0=-((ins.length-1)*rowH)/2;
+      ins.forEach((m,i)=>{ const dx=side*(hw+SAT.GX+colW/2), dy=y0+i*rowH; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
+    } else {                          // extracellular above/below -> a row on the other side
+      const side=vy>0?-1:1, rowH=Math.max(...hs), tot=ws.reduce((a,w)=>a+w,0)+SAT.GX*(ins.length-1); let x=-tot/2;
+      ins.forEach((m,i)=>{ const dx=x+ws[i]/2, dy=side*(hh+SAT.GY+rowH/2); x+=ws[i]+SAT.GX; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
+    }
   });
 }
 function setupBoxGrips(){
@@ -5124,15 +5145,7 @@ function cellLayout(){
     cols[ci]=bestP; });
   placeAll();
   placeOuter();
-  // a unit with extracellular molecules: its own intracellular molecules go on the OPPOSITE side, so it reads
-  // outside -> unit -> inside (user 2026-10-30)
-  Object.entries(S.hosts).forEach(([id,ms])=>{
-    const h=cy.getElementById(id), hp=h.position(), ext=h.neighborhood("node[?outer]"); if(!ext.length || !ms.length) return;
-    const extSide=Math.sign(ext.reduce((a,m)=>a+m.position().x,0)/ext.length - hp.x) || 1, G=S.geom[id];
-    const y0=-((ms.length-1)*G.rowH)/2;
-    ms.forEach((m,row)=>{ const dx=-extSide*(G.hostW/2+SAT.GX+G.colW/2), dy=y0+row*G.rowH;
-      m.position({x:hp.x+dx, y:hp.y+dy}); m.data("_dx",dx); m.data("_dy",dy); });
-  });
+  orientIntra(cy.nodes("[!is_mol][!is_cell]"));
   pushOutExtracellular();
   LAST_LAYOUT_INFO="cell layout: "+countCrossings(coreE)+" crossing(s)";
   cy.fit(null,40);
