@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-10-30 14:44</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-25 12:34</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4381,8 +4381,8 @@ function render(g, selectedIds){
       {selector:"node[?is_cell]",style:{
         "shape":"round-rectangle","background-color":"data(tint)","background-opacity":0.6,
         "border-width":3,"border-color":"data(edge)","border-style":e=>e.data("extra")?"dashed":"solid",
-        "label":"data(label)","text-valign":"top","text-halign":"center","text-margin-y":-8,
-        "font-size":"26px","font-weight":"bold","font-family":"Arial, Helvetica, Liberation Sans, sans-serif","color":"#334",
+        "label":"data(label)","text-valign":"top","text-halign":"center","text-margin-y":-12,
+        "font-size":"40px","font-weight":"bold","font-family":"Arial, Helvetica, Liberation Sans, sans-serif","color":"#000","text-wrap":"wrap","text-max-width":"560px",
         "padding":"36px"}},
       {selector:"node[!is_mol][!is_cell]",style:{
         "label":"","width":"224px","height":"data(h)","shape":"round-rectangle",
