@@ -1,0 +1,518 @@
+id: gomodel:6ac817cf00001061
+title: 'Visual perception: Glutamate acts on OFF cone bipolar cells via kainate glutamate
+  receptor complex (Human).'
+taxon: NCBITaxon:9606
+status: production
+date_modified: '2026-10-16'
+comments:
+- 'Comment to reviewer: Output of signaling via glutamate depends on light and dark
+  condition. In the light: less glutamate release by the photoreceptor -> less glutamate
+  in the synaptic cleft means less activation of kainate receptor complex on the OFF
+  cells -> membrane hyperpolarization of OFF cells -> OFF cells are inhibited.
+
+  In the dark: continuos glutamate release by the photoreceptor -> more glutamate
+  in the synaptic cleft means activation of kainate receptor complex on the OFF cells
+  -> membrane depolarization of OFF cells -> OFF cells are activated.
+
+
+  Most of the signals on the OFF bipolar cells are transmitted by kainate receptors
+  with only a limited contributions of AMPA receptors'
+activities:
+- id: gomodel:6ac817cf00001061/6ac817cf00001062
+  enabled_by:
+    type: EnabledByProteinComplexAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:7536611
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000314
+      reference: PMID:32999066
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000314
+      reference: PMID:8589992
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0032983
+    has_part:
+    - type: ProteinComplexHasPartAssociation
+      evidence:
+      - term: ECO:0000314
+        reference: PMID:8589992
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-14'
+          provided_by:
+          - https://www.uniprot.org
+      - term: ECO:0000314
+        reference: PMID:32999066
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: UniProtKB:P39086
+    - type: ProteinComplexHasPartAssociation
+      evidence:
+      - term: ECO:0000314
+        reference: PMID:32999066
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      - term: ECO:0000314
+        reference: PMID:7536611
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: UniProtKB:Q13002
+  molecular_function:
+    type: MolecularFunctionAssociation
+    term: GO:0015277
+  occurs_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:F7AGW3
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-14'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0045211
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:F7AGW3
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0030425
+      part_of:
+        type: GrossAnatomyAssociation
+        evidence:
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - UniProtKB:F7AGW3
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-10-15'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-14'
+          provided_by:
+          - https://www.uniprot.org
+        term: CL:0000750
+        part_of:
+          type: GrossAnatomyAssociation
+          evidence:
+          - term: ECO:0000250
+            reference: GO_REF:0000024
+            with_objects:
+            - UniProtKB:F7AGW3
+            provenances:
+            - contributor:
+              - https://orcid.org/0000-0002-5283-6593
+              date: '2026-10-15'
+              provided_by:
+              - https://www.uniprot.org
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-10-15'
+            provided_by:
+            - https://www.uniprot.org
+          term: UBERON:0001790
+  part_of:
+    type: BiologicalProcessAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q38PU4
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-14'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-14'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0060079
+    part_of:
+      type: BiologicalProcessAssociation
+      evidence:
+      - term: ECO:0000304
+        reference: PMID:20932357
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:7536611
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002234
+    molecule: gomodel:6ac817cf00001061/6ac817cf00001074
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:8589992
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000314
+      reference: PMID:7536611
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6ac817cf00001061/6ac817cf00001073
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:7536611
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0012001
+    molecule: gomodel:6ac817cf00001061/6ac817cf00001072
+molecules:
+- id: gomodel:6ac817cf00001061/6ac817cf00001074
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000305
+      reference: PMID:7536611
+      with_objects:
+      - GO:0015277
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005737
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:F7AGW3
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0030425
+      part_of:
+        type: GrossAnatomyAssociation
+        evidence:
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - UniProtKB:F7AGW3
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-10-15'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+        term: CL:0000750
+        part_of:
+          type: GrossAnatomyAssociation
+          evidence:
+          - term: ECO:0000250
+            reference: GO_REF:0000024
+            with_objects:
+            - UniProtKB:F7AGW3
+            provenances:
+            - contributor:
+              - https://orcid.org/0000-0002-5283-6593
+              date: '2026-10-15'
+              provided_by:
+              - https://www.uniprot.org
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-10-15'
+            provided_by:
+            - https://www.uniprot.org
+          term: UBERON:0001790
+- id: gomodel:6ac817cf00001061/6ac817cf00001073
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000305
+      reference: PMID:24872565
+      with_objects:
+      - GO:0098978
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0043083
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:F7AGW3
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0045211
+      part_of:
+        type: GrossAnatomyAssociation
+        evidence:
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - UniProtKB:F7AGW3
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-10-15'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-10-15'
+          provided_by:
+          - https://www.uniprot.org
+        term: UBERON:0001790
+- id: gomodel:6ac817cf00001061/6ac817cf00001072
+  term: CHEBI:29985
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000305
+      reference: PMID:24872565
+      with_objects:
+      - GO:0098978
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-10-15'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-10-15'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0043083
+objects:
+- id: GO:0015277
+  label: kainate selective glutamate receptor activity
+  type: gocam:Object
+- id: GO:0032983
+  label: kainate selective glutamate receptor complex
+  type: gocam:Object
+- id: UniProtKB:P39086
+  label: GRIK1 Hsap
+  type: gocam:Object
+- id: UniProtKB:Q13002
+  label: GRIK2 Hsap
+  type: gocam:Object
+- id: GO:0060079
+  label: excitatory postsynaptic potential
+  type: gocam:Object
+- id: CHEBI:29985
+  label: L-glutamate(1-)
+  type: gocam:Object
+- id: CHEBI:36916
+  label: cation
+  type: gocam:Object
+- id: GO:0043083
+  label: synaptic cleft
+  type: gocam:Object
+- id: GO:0005737
+  label: cytoplasm
+  type: gocam:Object
+- id: GO:0030425
+  label: dendrite
+  type: gocam:Object
+- id: CL:0000750
+  label: OFF-bipolar cell
+  type: gocam:Object
+- id: GO:0045211
+  label: postsynaptic membrane
+  type: gocam:Object
+- id: UBERON:0001790
+  label: outer plexiform layer of retina
+  type: gocam:Object
+- id: ECO:0000250
+  label: sequence similarity evidence used in manual assertion
+  type: gocam:Object
+- id: ECO:0000314
+  label: direct assay evidence used in manual assertion
+  type: gocam:Object
+- id: ECO:0000305
+  label: curator inference used in manual assertion
+  type: gocam:Object
+- id: GO:0007601
+  label: visual perception
+  type: gocam:Object
+- id: ECO:0000304
+  label: author statement supported by traceable reference used in manual assertion
+  type: gocam:Object
+provenances:
+- contributor:
+  - https://orcid.org/0000-0002-5283-6593
+  date: '2026-10-16'
+  provided_by:
+  - https://www.uniprot.org

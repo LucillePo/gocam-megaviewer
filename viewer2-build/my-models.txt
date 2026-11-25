@@ -1,0 +1,50 @@
+# GO-CAM models to include in the viewer -- one ID per line.
+# Edit this list (add/remove IDs). Refreshed from live Noctua every day by .github/workflows/refresh-viewer2.yml
+# (on the hub: ~/GO-CAM-Viewer2/my-models.txt + refresh.sh; keep both lists the same).
+# Read from Noctua LIVE (anonymous barista read, no token), falling back to dev if not on live.
+# Lines starting with # and blank lines are ignored.
+
+gomodel:6918f23700000035
+gomodel:6a0784b700000502
+gomodel:6a2b236300001621
+gomodel:6a18a9ba00000549
+gomodel:6a18a9ba00001648
+gomodel:6a4e740f00000478
+gomodel:69ea894900004256
+
+# second set (added 2026-09-22)
+gomodel:69ea894900003563
+gomodel:6a0784b700000336
+gomodel:6a0784b700005841
+gomodel:6a2b236300001298
+gomodel:6a2b236300001490
+gomodel:6a2b236300000742
+gomodel:6a18a9ba00002973
+gomodel:6a2b236300003566
+
+# third set: ON-bipolar / GPR179 (added 2026-10-23; 4 are dev-only until promotion)
+gomodel:6a6ba88c00000472
+gomodel:6ab067da00005098
+gomodel:6ab067da00002482
+gomodel:6ab067da00010509
+gomodel:6ab067da00008260
+gomodel:689e7a5d00000901
+# gomodel:6a7e360900000608   (state=delete on live 2026-11-25; removed from curator list)
+gomodel:6a607ed200000208
+
+# fourth set: curator's 37-id graph (added 2026-11-25)
+gomodel:68fac5ed00003700
+gomodel:68fac5ed00003872
+gomodel:69ea894900003638
+gomodel:69ea894900003713
+gomodel:6a18a9ba00000241
+gomodel:6a2b236300001117
+gomodel:6a2b236300001213
+gomodel:6a2b236300001362
+gomodel:6a2b236300001426
+gomodel:6a2b236300001559
+gomodel:6ab067da00012590
+gomodel:6ab067da00012618
+gomodel:6ab5999400002242
+gomodel:6ac817cf00001061
+gomodel:6b01078700000087

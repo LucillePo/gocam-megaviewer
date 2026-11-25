@@ -1,0 +1,37 @@
+# Daily refresh of Mega Viewer 2 (viewer2.html) from LIVE Noctua.
+# Reads every model in viewer2-build/my-models.txt from live production (anonymous, read-only);
+# a model not in production is read from noctua-dev. Republishes viewer2.html only when a model changed.
+# If live Noctua cannot be reached, the run stops and nothing is published.
+name: Refresh Viewer 2 from live Noctua
+on:
+  schedule:
+    - cron: "0 5 * * *"     # every day 05:00 UTC
+  workflow_dispatch: {}      # "Run workflow" button in the Actions tab
+permissions:
+  contents: write
+concurrency: refresh-viewer2
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install gocam-py + pyyaml
+        run: pip install "gocam==0.14.0" pyyaml
+      - name: Fetch models from live Noctua (dev only if not in production)
+        run: python viewer2-build/scripts/fetch_live.py viewer2-build
+      - name: Publish if any model changed
+        run: |
+          set -euo pipefail
+          git add -A viewer2-build/models
+          if git diff --cached --quiet; then echo "No model changed; viewer2.html left as is."; exit 0; fi
+          git diff --cached --stat
+          GOCAM_DIR=viewer2-build PYTHONPATH=viewer2-build/scripts python viewer2-build/scripts/build_app.py
+          cp viewer2-build/app2.html viewer2.html
+          git add viewer2.html
+          git -c user.name="viewer2-refresh[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Viewer 2: daily refresh from live Noctua ($(date -u +%F))"
+          git push

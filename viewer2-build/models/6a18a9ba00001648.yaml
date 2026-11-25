@@ -1,0 +1,794 @@
+id: gomodel:6a18a9ba00001648
+title: Role of SLC24A1 (NCKX1) rod photoresponse recovery step_Visual Perception (Human)
+taxon: NCBITaxon:9606
+status: production
+date_modified: '2026-11-25'
+activities:
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001708
+  enabled_by:
+    type: EnabledByGeneProductAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P51177
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: UniProtKB:Q9UMX6
+  molecular_function:
+    type: MolecularFunctionAssociation
+    term: GO:0008048
+  occurs_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:9620085
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-17'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-17'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0042622
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000314
+        reference: PMID:9620085
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-17'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-17'
+        provided_by:
+        - https://www.uniprot.org
+      term: CL:0000604
+  part_of:
+    type: BiologicalProcessAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P51177
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0071277
+    part_of:
+      type: BiologicalProcessAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q8VBV8
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0036368
+      part_of:
+        type: BiologicalProcessAssociation
+        evidence:
+        - term: ECO:0000315
+          reference: PMID:15452722
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-06-08'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+        term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P51177
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001716
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P46065
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-09-16'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-09-16'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0012002
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001664
+  causal_associations:
+  - type: CausalAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P51177
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002629
+    downstream_activity: gomodel:6a18a9ba00001648/6a18a9ba00001668
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001722
+  enabled_by:
+    type: EnabledByProteinComplexAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q00194
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q28181
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0017071
+    has_part:
+    - type: ProteinComplexHasPartAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q28181
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+      term: UniProtKB:Q14028
+    - type: ProteinComplexHasPartAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q00194
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+      term: UniProtKB:P29973
+  molecular_function:
+    type: MolecularFunctionAssociation
+    term: GO:0005223
+  occurs_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:P29974
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:E1AZ71
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0042622
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:P29974
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:E1AZ71
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+      term: CL:0000604
+  part_of:
+    type: BiologicalProcessAssociation
+    evidence:
+    - term: ECO:0000315
+      reference: PMID:7479749
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    - term: ECO:0000315
+      reference: PMID:11379879
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:12815043
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0012001
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001720
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001668
+  enabled_by:
+    type: EnabledByGeneProductAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:29515371
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-07'
+      provided_by:
+      - https://www.uniprot.org
+    term: UniProtKB:P51841
+  molecular_function:
+    type: MolecularFunctionAssociation
+    term: GO:0004383
+  occurs_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q5SDA5
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-07'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-07'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0042622
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q5SDA5
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-07'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-07'
+        provided_by:
+        - https://www.uniprot.org
+      term: CL:0000604
+  part_of:
+    type: BiologicalProcessAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q5SDA5
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0036368
+    part_of:
+      type: BiologicalProcessAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q5SDA5
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-08'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:29515371
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002234
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001720
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:29515371
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-08'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00002094
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001649
+  enabled_by:
+    type: EnabledByGeneProductAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:26631410
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: UniProtKB:O60721
+  molecular_function:
+    type: MolecularFunctionAssociation
+    term: GO:0008273
+  occurs_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - UniProtKB:Q28139
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0042622
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q91WD8
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-05'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+      term: CL:0000604
+  part_of:
+    type: BiologicalProcessAssociation
+    evidence:
+    - term: ECO:0000305
+      reference: PMID:26631410
+      with_objects:
+      - GO:0008273
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0006874
+    part_of:
+      type: BiologicalProcessAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - UniProtKB:Q91WD8
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-05'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0036368
+      part_of:
+        type: BiologicalProcessAssociation
+        evidence:
+        - term: ECO:0000315
+          reference: PMID:20850105
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0002-5283-6593
+            date: '2026-06-05'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0002-5283-6593
+          date: '2026-06-05'
+          provided_by:
+          - https://www.uniprot.org
+        term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:26631410
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001664
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000314
+      reference: PMID:26631410
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0002-5283-6593
+        date: '2026-06-05'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002234
+    molecule: gomodel:6a18a9ba00001648/6a18a9ba00001662
+molecules:
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001720
+  term: CHEBI:57746
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence: []
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005829
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001664
+  term: CHEBI:29108
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence: []
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005829
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001662
+  term: CHEBI:29108
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence: []
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-05'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005576
+- id: gomodel:6a18a9ba00001648/6a18a9ba00001716
+  term: UniProtKB:P51841
+- id: gomodel:6a18a9ba00001648/6a18a9ba00002094
+  term: CHEBI:37565
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence: []
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0002-5283-6593
+      date: '2026-06-08'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005829
+objects:
+- id: GO:0008273
+  label: calcium, potassium:sodium antiporter activity
+  type: gocam:Object
+- id: UniProtKB:O60721
+  label: SLC24A1 Hsap
+  type: gocam:Object
+- id: GO:0006874
+  label: intracellular calcium ion homeostasis
+  type: gocam:Object
+- id: GO:0036368
+  label: photoresponse recovery
+  type: gocam:Object
+- id: GO:0007601
+  label: visual perception
+  type: gocam:Object
+- id: GO:0042622
+  label: photoreceptor outer segment membrane
+  type: gocam:Object
+- id: CL:0000604
+  label: retinal rod cell
+  type: gocam:Object
+- id: ECO:0000314
+  label: direct assay evidence used in manual assertion
+  type: gocam:Object
+- id: ECO:0000305
+  label: curator inference used in manual assertion
+  type: gocam:Object
+- id: ECO:0000250
+  label: sequence similarity evidence used in manual assertion
+  type: gocam:Object
+- id: ECO:0000315
+  label: mutant phenotype evidence used in manual assertion
+  type: gocam:Object
+- id: CHEBI:29108
+  label: calcium(2+)
+  type: gocam:Object
+- id: GO:0005576
+  label: extracellular region
+  type: gocam:Object
+- id: GO:0005829
+  label: cytosol
+  type: gocam:Object
+- id: GO:0004383
+  label: guanylate cyclase activity
+  type: gocam:Object
+- id: UniProtKB:P51841
+  label: GUCY2F Hsap
+  type: gocam:Object
+- id: GO:0008048
+  label: calcium sensitive guanylate cyclase activator activity
+  type: gocam:Object
+- id: UniProtKB:Q9UMX6
+  label: GUCA1B Hsap
+  type: gocam:Object
+- id: GO:0071277
+  label: cellular response to calcium ion
+  type: gocam:Object
+- id: CHEBI:57746
+  label: 3',5'-cyclic GMP(1-)
+  type: gocam:Object
+- id: GO:0005223
+  label: intracellularly cGMP-activated cation channel activity
+  type: gocam:Object
+- id: GO:0017071
+  label: intracellular cyclic nucleotide activated cation channel complex
+  type: gocam:Object
+- id: UniProtKB:Q14028
+  label: CNGB1 Hsap
+  type: gocam:Object
+- id: UniProtKB:P29973
+  label: CNGA1 Hsap
+  type: gocam:Object
+- id: CHEBI:37565
+  label: GTP(4-)
+  type: gocam:Object
+provenances:
+- contributor:
+  - https://orcid.org/0000-0002-5283-6593
+  - https://orcid.org/0000-0003-1522-9900
+  date: '2026-11-25'
+  provided_by:
+  - https://www.uniprot.org
