@@ -74,7 +74,7 @@ activities:
       date: '2026-11-26'
       provided_by:
       - https://www.uniprot.org
-    term: GO:0042622
+    term: GO:0042734
     part_of:
       type: CellTypeAssociation
       evidence:
@@ -1136,8 +1136,8 @@ objects:
 - id: GO:0007601
   label: visual perception
   type: gocam:Object
-- id: GO:0042622
-  label: photoreceptor outer segment membrane
+- id: GO:0042734
+  label: presynaptic membrane
   type: gocam:Object
 - id: GO:0098684
   label: photoreceptor ribbon synapse
@@ -1210,6 +1210,9 @@ objects:
   type: gocam:Object
 - id: UniProtKB:Q9NQW8
   label: CNGB3 Hsap
+  type: gocam:Object
+- id: GO:0042622
+  label: photoreceptor outer segment membrane
   type: gocam:Object
 - id: GO:0005576
   label: extracellular region

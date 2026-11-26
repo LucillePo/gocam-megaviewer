@@ -502,7 +502,7 @@ activities:
       date: '2026-11-26'
       provided_by:
       - https://www.uniprot.org
-    term: GO:0042622
+    term: GO:0048787
     part_of:
       type: CellTypeAssociation
       evidence:
@@ -1170,8 +1170,8 @@ objects:
 - id: GO:0005245
   label: voltage-gated calcium channel activity
   type: gocam:Object
-- id: GO:0042622
-  label: photoreceptor outer segment membrane
+- id: GO:0048787
+  label: presynaptic active zone membrane
   type: gocam:Object
 - id: GO:0098684
   label: photoreceptor ribbon synapse
@@ -1214,6 +1214,9 @@ objects:
   type: gocam:Object
 - id: UniProtKB:Q14028
   label: CNGB1 Hsap
+  type: gocam:Object
+- id: GO:0042622
+  label: photoreceptor outer segment membrane
   type: gocam:Object
 - id: CHEBI:29101
   label: sodium(1+)
