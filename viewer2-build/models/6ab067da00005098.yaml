@@ -2,7 +2,7 @@ id: gomodel:6ab067da00005098
 title: Cone-ON bipolar postsynapse organization via LRIT3_Visual Perception (Human)
 taxon: NCBITaxon:9606
 status: production
-date_modified: '2026-11-16'
+date_modified: '2026-11-26'
 comments:
 - '2026-10-02: LRIT3 BP refined per curator - part_of GO:1903539 protein localization
   to postsynaptic membrane (nested part_of GO:0099173 postsynapse organization).'
@@ -133,7 +133,27 @@ activities:
           date: '2026-10-02'
           provided_by:
           - http://geneontology.org
-        term: CL:0000749
+        term: CL:0000752
+        part_of:
+          type: GrossAnatomyAssociation
+          evidence:
+          - term: ECO:0000250
+            reference: GO_REF:0000024
+            with_objects:
+            - MGI:1351343
+            provenances:
+            - contributor:
+              - https://orcid.org/0000-0003-1522-9900
+              date: '2026-11-26'
+              provided_by:
+              - https://www.uniprot.org
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0003-1522-9900
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
+          term: CL:0000749
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -273,6 +293,26 @@ activities:
           provided_by:
           - http://geneontology.org
         term: CL:0000749
+        part_of:
+          type: GrossAnatomyAssociation
+          evidence:
+          - term: ECO:0000250
+            reference: GO_REF:0000024
+            with_objects:
+            - MGI:2448607
+            provenances:
+            - contributor:
+              - https://orcid.org/0000-0003-1522-9900
+              date: '2026-11-26'
+              provided_by:
+              - https://www.uniprot.org
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0003-1522-9900
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
+          term: CL:0000752
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -473,6 +513,26 @@ activities:
           provided_by:
           - http://geneontology.org
         term: CL:0000749
+        part_of:
+          type: GrossAnatomyAssociation
+          evidence:
+          - term: ECO:0000250
+            reference: GO_REF:0000024
+            with_objects:
+            - MGI:1330305
+            provenances:
+            - contributor:
+              - https://orcid.org/0000-0003-1522-9900
+              date: '2026-11-26'
+              provided_by:
+              - https://www.uniprot.org
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0003-1522-9900
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
+          term: CL:0000752
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -513,6 +573,47 @@ activities:
         provided_by:
         - http://geneontology.org
       term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6ab067da00005098/6aff774700001931
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002234
+    molecule: gomodel:6ab067da00005098/6aff774700001936
 - id: gomodel:6ab067da00005098/6ab067da00005550
   enabled_by:
     type: EnabledByGeneProductAssociation
@@ -762,6 +863,110 @@ molecules:
   term: UniProtKB:O15303
 - id: gomodel:6ab067da00005098/6ab067da00005569
   term: UniProtKB:Q7Z4N2
+- id: gomodel:6ab067da00005098/6aff774700001931
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0043083
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - MGI:1330305
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0045211
+- id: gomodel:6ab067da00005098/6aff774700001936
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005737
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - MGI:1330305
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0030425
+      part_of:
+        type: GrossAnatomyAssociation
+        evidence:
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - MGI:1330305
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0003-1522-9900
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+        term: CL:0000749
 - id: gomodel:6ab067da00005098/6ab067da00005117
   term: CHEBI:29985
   located_in:
@@ -813,8 +1018,8 @@ objects:
 - id: GO:0044292
   label: dendrite terminus
   type: gocam:Object
-- id: CL:0000749
-  label: ON-bipolar cell
+- id: CL:0000752
+  label: cone retinal bipolar cell
   type: gocam:Object
 - id: GO:0007216
   label: G protein-coupled glutamate receptor signaling pathway
@@ -833,6 +1038,9 @@ objects:
   type: gocam:Object
 - id: UniProtKB:Q7Z4N2
   label: TRPM1 Hsap
+  type: gocam:Object
+- id: CL:0000749
+  label: ON-bipolar cell
   type: gocam:Object
 - id: GO:1903539
   label: protein localization to postsynaptic membrane
@@ -855,10 +1063,22 @@ objects:
 - id: ECO:0000304
   label: author statement supported by traceable reference used in manual assertion
   type: gocam:Object
+- id: CHEBI:36916
+  label: cation
+  type: gocam:Object
+- id: GO:0045211
+  label: postsynaptic membrane
+  type: gocam:Object
+- id: GO:0005737
+  label: cytoplasm
+  type: gocam:Object
+- id: GO:0030425
+  label: dendrite
+  type: gocam:Object
 provenances:
 - contributor:
   - https://orcid.org/0000-0003-1522-9900
-  date: '2026-11-16'
+  date: '2026-11-26'
   provided_by:
   - http://geneontology.org
   - https://www.uniprot.org

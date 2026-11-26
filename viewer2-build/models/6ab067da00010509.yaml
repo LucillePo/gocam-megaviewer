@@ -3,7 +3,7 @@ title: GPR179 positive regulation of TRPM1 channel gating in ON-bipolar cells_Vi
   Perception (Human)
 taxon: NCBITaxon:9606
 status: production
-date_modified: '2026-11-16'
+date_modified: '2026-11-26'
 comments:
 - Curated with GO AI HUB. GPR179 directly positively regulates TRPM1 channel gating
   at ON-bipolar dendritic tips.
@@ -296,7 +296,152 @@ activities:
         provided_by:
         - http://geneontology.org
       term: GO:0007601
+  molecular_associations:
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002233
+    molecule: gomodel:6ab067da00010509/6aff774700001899
+  - type: MoleculeAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    predicate: RO:0002234
+    molecule: gomodel:6ab067da00010509/6aff774700001906
 molecules:
+- id: gomodel:6ab067da00010509/6aff774700001899
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0043083
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - MGI:1330305
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0045211
+- id: gomodel:6ab067da00010509/6aff774700001906
+  term: CHEBI:36916
+  located_in:
+    type: CellularAnatomicalEntityAssociation
+    evidence:
+    - term: ECO:0000250
+      reference: GO_REF:0000024
+      with_objects:
+      - MGI:1330305
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+    provenances:
+    - contributor:
+      - https://orcid.org/0000-0003-1522-9900
+      date: '2026-11-26'
+      provided_by:
+      - https://www.uniprot.org
+    term: GO:0005737
+    part_of:
+      type: CellTypeAssociation
+      evidence:
+      - term: ECO:0000250
+        reference: GO_REF:0000024
+        with_objects:
+        - MGI:1330305
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+      provenances:
+      - contributor:
+        - https://orcid.org/0000-0003-1522-9900
+        date: '2026-11-26'
+        provided_by:
+        - https://www.uniprot.org
+      term: GO:0030425
+      part_of:
+        type: GrossAnatomyAssociation
+        evidence:
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - MGI:1330305
+          provenances:
+          - contributor:
+            - https://orcid.org/0000-0003-1522-9900
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
+        provenances:
+        - contributor:
+          - https://orcid.org/0000-0003-1522-9900
+          date: '2026-11-26'
+          provided_by:
+          - https://www.uniprot.org
+        term: CL:0000749
 - id: gomodel:6ab067da00010509/6ab067da00010512
   term: UniProtKB:Q7Z4N2
 objects:
@@ -339,10 +484,25 @@ objects:
 - id: GO:0005261
   label: monoatomic cation channel activity
   type: gocam:Object
+- id: CHEBI:36916
+  label: cation
+  type: gocam:Object
+- id: GO:0043083
+  label: synaptic cleft
+  type: gocam:Object
+- id: GO:0045211
+  label: postsynaptic membrane
+  type: gocam:Object
+- id: GO:0005737
+  label: cytoplasm
+  type: gocam:Object
+- id: GO:0030425
+  label: dendrite
+  type: gocam:Object
 provenances:
 - contributor:
   - https://orcid.org/0000-0003-1522-9900
-  date: '2026-11-16'
+  date: '2026-11-26'
   provided_by:
   - http://geneontology.org
   - https://www.uniprot.org

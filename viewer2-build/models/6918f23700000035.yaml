@@ -3,7 +3,7 @@ title: Dim light signaling mediated by RHO photoreceptor via G-alpha-t (transduc
   perception (Human)
 taxon: NCBITaxon:9606
 status: production
-date_modified: '2026-10-01'
+date_modified: '2026-11-25'
 comments:
 - GO:7770030
 activities:
@@ -993,6 +993,6 @@ objects:
 provenances:
 - contributor:
   - https://orcid.org/0000-0003-1522-9900
-  date: '2026-10-01'
+  date: '2026-11-25'
   provided_by:
   - https://www.uniprot.org
