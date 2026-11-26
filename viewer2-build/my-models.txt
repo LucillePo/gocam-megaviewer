@@ -28,7 +28,7 @@ gomodel:6ab067da00005098
 gomodel:6ab067da00002482
 gomodel:6ab067da00010509
 gomodel:6ab067da00008260
-gomodel:689e7a5d00000901
+# gomodel:689e7a5d00000901   (not in curator list of 2026-11-26, evening)
 # gomodel:6a7e360900000608   (state=delete on live 2026-11-25; removed from curator list)
 gomodel:6a607ed200000208
 
@@ -47,7 +47,7 @@ gomodel:6ab067da00012590
 gomodel:6ab067da00012618
 gomodel:6ab5999400002242
 gomodel:6ac817cf00001061
-# gomodel:6b01078700000087   (not in curator list of 2026-11-26)
+gomodel:6b01078700000087
 
 # fifth set: curator vision list of 2026-11-26
 gomodel:6aff774700001973
