@@ -11,6 +11,7 @@ button.ok{background:#1a8a3a;border-color:#1a8a3a} a{color:#2a6ef0} .note{backgr
 <!--NEWS-->
 <section style="background:#eef7ee;border-color:#b9dcb9"><h2>Viewer 2 — last updated 26 Nov 2026</h2>
 <ul style="margin:4px 0 0 18px;padding:0;font-size:14px;line-height:1.5">
+<li><b>New rule:</b> extracellular molecules are never merged across models (synaptic cleft glutamate and Ca²⁺ of 6ab067da00012618 and 6ab067da00012590 are now separate; same for glutamate of 6aff774700001973, 6a6ba88c00000472, 6ab067da00005098, 6ac817cf00001061). See "Viewer 2 rules" below.</li>
 <li><b>Cell types:</b> a cell part_of another cell in the CC chain (ON-bipolar cell part_of cone retinal bipolar cell) is one combined box, "ON-bipolar cell + cone retinal bipolar cell", separate from the rod bipolar units.</li>
 <li><b>Data:</b> vision list of 26 Nov: + cone ON-bipolar models 6aff774700001973, 6aff774700002358, 6aff774700002117; − 6b01078700000087.</li>
 <li><b>Daily refresh:</b> Viewer 2 now re-reads its built-in models from live Noctua every day at 05:00 UTC (dev only for models not in production) and republishes itself when a model changed.</li>
@@ -30,6 +31,15 @@ button.ok{background:#1a8a3a;border-color:#1a8a3a} a{color:#2a6ef0} .note{backgr
 <li>Earlier: cell-type boxes, synaptic-cleft glutamate linking models across cells, sharp molecule names, resizable boxes.</li>
 </ul></section>
 <!--/NEWS-->
+<!--RULES-->
+<section style="background:#f4f4fb;border-color:#c7c7e0"><h2>Viewer 2 rules (curator decisions)</h2>
+<ul style="margin:4px 0 0 18px;padding:0;font-size:14px;line-height:1.5">
+<li><b>Extracellular molecules are never merged across models</b> (26 Nov 2026). A synaptic cleft belongs to its own synapse: a molecule released at one synapse is not the one received at another. Each extracellular molecule (located in extracellular region GO:0005576 or a subterm, incl. synaptic cleft) stays in its own model and is joined only where that model uses the same molecule (e.g. glutamate released by the SNARE complex and sensed by GRM6 in one model). An extracellular molecule touching only one unit is drawn once for that unit. To be narrowed case by case.</li>
+<li><b>Cell types:</b> the first CL in the CC part_of chain; a cell part_of another cell (ON-bipolar cell part_of cone retinal bipolar cell) is one combined cell type. Units in different cell types never merge.</li>
+<li><b>Unit merge:</b> same gene product(s) + MF + BP (with its part_of chain) + CC (with its part_of chain).</li>
+<li><b>Sources:</b> live production first, noctua-dev only for models not in production; refreshed daily.</li>
+</ul></section>
+<!--/RULES-->
 <section><h2>Rod phototransduction (Rod / RHO) <span class="n">7 models</span></h2>
 <textarea id="rod" readonly rows="7">gomodel:6918f23700000035
 gomodel:6a0784b700000502

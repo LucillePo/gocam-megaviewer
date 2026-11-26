@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-26 17:14</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-26 17:34</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -4037,10 +4037,11 @@ let CELL_PLACE = {};          // no-CL unit sig -> cell box id the curator dropp
 const EXTRA_ID = "EXTRA";     // pseudo cell key for extracellular units (CC under GO:0005576), drawn between the cells
 const EXTRA_GO = new Set(["GO:0005576","GO:0005615","GO:0031012","GO:0043083"]);   // fallback if QuickGO is unreachable
 const CELL_TINT = [["#e8f1fb","#6d8fb8"],["#fdeee4","#c08a5f"],["#eaf6ec","#6fa07a"],["#f3ecfb","#8f78b5"],["#fbf7e1","#b5a34f"],["#e6f6f6","#5f9e9e"]];
-// a molecule located in the synaptic cleft (GO:0043083 or a subterm) is ONE shared node per chemical, across activities and
-// models, drawn between the cells: that is how release (presynaptic model) joins reception (postsynaptic model).
+// (2026-10-26, REPLACED 2026-11-26 by the extracellular no-merge rule, see slotId) a synaptic-cleft molecule used to be ONE
+// shared node per chemical across activities and models. isPoolLoc now only marks cleft molecules to be drawn between the cells.
 // Deliberately NOT for "extracellular region": the phototransduction ions there (CNG channel Ca/Na in, SLC24 Ca out)
 // must stay separate per activity (user design 2026-09).
+let XMOL_RULE = "link";   // "link" (default) = rule of 2026-11-26; "strict" = also one input node per model on a merged unit; "pool" = old 2026-10-26 behaviour
 function isPoolLoc(id){ return id==="GO:0043083" || !!(_ancCache[id] && _ancCache[id].has("GO:0043083")); }
 function isExtracellular(id){ return EXTRA_GO.has(id) || !!(_ancCache[id] && _ancCache[id].has("GO:0005576")); }
 let PRESENT_CL = {};   // CL id -> label, for the cell types of the loaded units (set in doBuild)
@@ -4266,26 +4267,41 @@ function buildGraph(selectedIds, mode, showMols){
     // channel's extracellular Ca-in and SLC24A1's extruded Ca-out stay separate.
     const parent={};
     function find(x){ if(parent[x]===undefined)parent[x]=x; while(parent[x]!==x){parent[x]=parent[parent[x]];x=parent[x];} return x; }
-    function slotId(an,term,pred,loc){   // an extracellular-located molecule is ONE pool per (chemical, location), shared by
-      if(loc && isPoolLoc(loc)) return "X|"+term+"|"+loc;   // every activity and model, whatever the direction (user 2026-10-26)
+    // RULE (user 2026-11-26): an EXTRACELLULAR molecule (located in GO:0005576 or a subterm, incl. the synaptic cleft) is
+    // never merged across models: a synaptic cleft is specific to its synapse, and a molecule released at one synapse is
+    // not the one received at another. It is one node per molecule individual of its own model, joined only where that
+    // model itself uses the same individual (e.g. glutamate released by the SNARE complex and sensed by GRM6 in one model).
+    // Replaces the 2026-10-26 pool (one synaptic-cleft node per chemical across all models). To be narrowed case by case.
+    function slotId(an,term,pred,loc,mid,molid){
+      if((XMOL_RULE==="strict"||XMOL_RULE==="link") && loc && isExtracellular(loc)) return "XM|"+mid+"|"+(molid||(an+"|"+term+"|"+pred));
+      if(XMOL_RULE==="pool" && loc && isPoolLoc(loc)) return "X|"+term+"|"+loc;
       return an+"|"+term+"|"+((pred==="has output")?"out":"in"); }
     const indSlots={};   // molecule individual -> [slotIds]
-    acts.forEach(({a})=>{
+    acts.forEach(({mid,a})=>{
       const an=actToNode[a.local_id];
       (a.mols||[]).forEach(x=>{ const pred=x[0],term=x[2],molid=x[3];
         if(!/^CHEBI:/.test(term||"")) return;
-        const s=slotId(an,term,pred,x[4]); find(s);
+        const s=slotId(an,term,pred,x[4],mid,molid); find(s);
         (indSlots[molid]=indSlots[molid]||[]).push(s); });
     });
     Object.values(indSlots).forEach(ss=>{ for(let i=1;i<ss.length;i++) parent[find(ss[0])]=find(ss[i]); });
 
+    // an extracellular molecule node that touches only ONE unit (one direction) links nothing: shown once per unit, not
+    // once per model (avoids 7 identical Ca2+ inputs on the merged CNG channel). One that touches two or more units (a
+    // release -> reception link) keeps its own model (user rule 2026-11-26).
+    const xTouch={};
+    if(XMOL_RULE==="link") acts.forEach(({mid,a})=>{ const an=actToNode[a.local_id];
+      (a.mols||[]).forEach(x=>{ if(!/^CHEBI:/.test(x[2]||"") || !(x[4] && isExtracellular(x[4]))) return;
+        const g=find(slotId(an,x[2],x[0],x[4],mid,x[3])); (xTouch[g]=xTouch[g]||new Set()).add(an+"|"+((x[0]==="has output")?"out":"in")); }); });
+    const molGroup=(an,x,mid)=>{ const g=find(slotId(an,x[2],x[0],x[4],mid,x[3]));
+      return (xTouch[g] && xTouch[g].size===1) ? "XU|"+[...xTouch[g]][0]+"|"+x[2]+"|"+x[4] : g; };
     const molNodes={};
     acts.forEach(({mid,a})=>{
       const anode=actToNode[a.local_id];
       (a.mols||[]).forEach(x=>{
         const pred=x[0], label=x[1], term=x[2];
         if(!/^CHEBI:/.test(term||"")) return;
-        const grp=find(slotId(anode,term,pred,x[4]));
+        const grp=molGroup(anode,x,mid);
         const mnid="m_"+grp.replace(/[^a-zA-Z0-9]/g,"_");
         const xl = x[4] && isPoolLoc(x[4]);
         if(!molNodes[mnid]) molNodes[mnid]={id:mnid, sig:mnid, is_mol:true, gp:label, gp_id:term, loc_id:x[4]||null, loc:x[5]||null, xmol:!!xl,
@@ -4516,7 +4532,7 @@ function wireInteractions(){
     if(n.is_mol){
       document.getElementById("detail").innerHTML=
         `<h1>◦ ${n.gp||"?"}</h1><div class="row"><span class="k">id</span><span class="mono">${n.gp_id||""}</span></div>`+
-        (n.loc?`<div class="row"><span class="k" title="located in (RO:0001025)">located in</span>${n.loc} <span class="mono">${n.loc_id||""}</span>${n.xmol?' <span class="sub">(synaptic cleft: one shared node for this chemical, across activities and models)</span>':''}</div>`:"")+
+        (n.loc?`<div class="row"><span class="k" title="located in (RO:0001025)">located in</span>${n.loc} <span class="mono">${n.loc_id||""}</span>${n.xmol?' <span class="sub">(extracellular: never merged across models; a synaptic cleft belongs to its own synapse)</span>':''}</div>`:"")+
         `<div class="row"><span class="k">in models</span>${(n.models||[]).map(id=>id.split(":")[1]).join(", ")}${n.bridge?' <b style="color:#c98a00">↔ bridge</b>':''}</div>`+
         `<div class="row sub">molecule (input/output of activities)</div>`;
       return;
