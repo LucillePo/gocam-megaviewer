@@ -244,7 +244,7 @@ activities:
       date: '2026-11-26'
       provided_by:
       - https://www.uniprot.org
-    predicate: RO:0002409
+    predicate: RO:0002407
     downstream_activity: gomodel:68fac5ed00003700/6aff774700002561
 - id: gomodel:68fac5ed00003700/68fac5ed00003710
   enabled_by:
