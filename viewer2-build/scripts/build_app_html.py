@@ -56,7 +56,7 @@ __LIBS__
 <div id="app">
   <div id="left"><div class="pad">
     <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build __BUILD__</span></h1>
-    <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange.</div>
+    <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange. Move several at once: Shift/Ctrl/Cmd-click them (or Shift-drag a rectangle on the background), then drag one; Esc or a click on the background clears the selection.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph">__DEFAULT_IDS__</textarea>
     <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -593,8 +593,12 @@ function render(g, selectedIds){
       {selector:".nocl",style:{"border-style":"dashed","border-width":4}},
       {selector:".faded",style:{"opacity":0.12}},
       {selector:".hi",style:{"border-color":"#1a1a2e","border-width":4}},
+      // several nodes selected (Shift/Ctrl/Cmd-click, or Shift-drag a rectangle): blue, and they move together (user 2026-11-26)
+      {selector:"node:selected[!is_cell]",style:{"overlay-color":"#1f6feb","overlay-opacity":0.28,"overlay-padding":"8px"}},
+      {selector:"node:selected[?is_cell]",style:{"border-color":"#1f6feb","border-width":8}},
     ],
     layout:{name:"preset"}, // we position manually below
+    boxSelectionEnabled:true, selectionType:"single",   // Shift/Ctrl/Cmd-click adds; Shift-drag on the background draws a selection rectangle
   });
 
   // rich labels: gene product BIG, molecular function small underneath
@@ -653,6 +657,7 @@ function wireInteractions(){
   cy.on("grab","node[!is_mol]",evt=>{ const a=evt.target, p=a.position(); let fol=cy.collection();
     if(a.data("is_cell")){ const kids=a.descendants("[!is_mol]"); fol=cy.nodes("[?outer]").filter(m=>m.neighborhood("node").some(u=>kids.contains(u))); }
     else fol=a.neighborhood("node[?is_mol]").filter(m=>m.degree()===1 && !m.data("xmol") && !m.parent().same(a));
+    fol=fol.filter(m=>!m.selected() && !m.ancestors().some(b=>b.selected()));   // moving a selection: selected nodes move by themselves
     a.scratch("_fol", fol.map(m=>({m, x:m.position().x, y:m.position().y}))); a.scratch("_p0", {x:p.x, y:p.y}); });
   cy.on("drag","node[!is_mol]",evt=>{ const a=evt.target, f=a.scratch("_fol"), p0=a.scratch("_p0"); if(!f||!p0) return;
     const p=a.position(), dx=p.x-p0.x, dy=p.y-p0.y;
@@ -738,7 +743,8 @@ function wireInteractions(){
     const ps=document.getElementById("placesel"); if(ps) ps.onchange=()=>placeUnit(n.id, ps.value||null);
   });
   cy.on("tap",evt=>{ if(evt.target===cy){ cy.elements().removeClass("hi faded"); selectedSig=null; } });
-  cy.on("grab","node",()=>pushHistory());   // snapshot before a drag, so undo reverts it
+  cy.on("grabon","node",()=>pushHistory());   // snapshot before a drag (once, also when several selected nodes move), so undo reverts it
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && cy) cy.nodes(":selected").unselect(); });
 }
 
 // --- resizable cell boxes: a corner grip (DOM overlay) sets the box's min-width/min-height; it grows right/down ---
