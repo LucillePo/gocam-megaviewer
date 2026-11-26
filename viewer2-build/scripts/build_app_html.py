@@ -787,10 +787,10 @@ function orientIntra(units){
     const hw=h.outerWidth()/2, hh=h.outerHeight()/2, ws=ins.map(m=>m.outerWidth()), hs=ins.map(m=>m.outerHeight());
     if(Math.abs(vx)>=Math.abs(vy)){   // extracellular left/right -> a column on the other side
       const side=vx>0?-1:1, colW=Math.max(...ws), rowH=Math.max(...hs)+SAT.GY, y0=-((ins.length-1)*rowH)/2;
-      ins.forEach((m,i)=>{ const dx=side*(hw+SAT.GX+colW/2), dy=y0+i*rowH; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
+      ins.forEach((m,i)=>{ const dx=side*(hw+SAT.EDGE+colW/2), dy=y0+i*rowH; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
     } else {                          // extracellular above/below -> a row on the other side
       const side=vy>0?-1:1, rowH=Math.max(...hs), tot=ws.reduce((a,w)=>a+w,0)+SAT.GX*(ins.length-1); let x=-tot/2;
-      ins.forEach((m,i)=>{ const dx=x+ws[i]/2, dy=side*(hh+SAT.GY+rowH/2); x+=ws[i]+SAT.GX; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
+      ins.forEach((m,i)=>{ const dx=x+ws[i]/2, dy=side*(hh+SAT.EDGE+rowH/2); x+=ws[i]+SAT.GX; m.position({x:hp.x+dx,y:hp.y+dy}); m.data("_host",h.id()); m.data("_dx",dx); m.data("_dy",dy); });
     }
   });
 }
@@ -1237,7 +1237,7 @@ function tileComponents(){
 // apart); they are placed as "satellites" beside their activity box, alternating right/left and
 // stacking. Shared molecules (degree >= 2, e.g. cGMP between cyclase and channel) stay in dagre
 // as true connectors. Satellites follow their box when it is dragged.
-const SAT={GX:18,GY:12};   // gaps between a box and its satellite molecules / between stacked satellites
+const SAT={GX:18,GY:12,EDGE:70};   // GX/GY: gaps between stacked satellites; EDGE: unit -> its own molecule (was 18; longer arrows, user 2026-11-26)
 // satellites: reserve room beside each host box for dagre (satPrep), then place them beside it (satPlace)
 function satPrep(){
   const sat=cy.nodes("[?is_mol]").filter(m=>m.degree()===1 && !m.data("xzone") && !m.data("outer"));   // xzone molecules sit between the cells instead
@@ -1252,7 +1252,7 @@ function satPrep(){
     const hostW=a.outerWidth(), hostH=a.outerHeight();
     const colW=Math.max(...ms.map(m=>m.outerWidth())), rowH=Math.max(...ms.map(m=>m.outerHeight()))+SAT.GY;
     geom[id]={hostW,colW,rowH,perSide};
-    const extraW=2*(colW+SAT.GX), needH=perSide*rowH-SAT.GY;   // symmetric: cytoscape centres the widened box, so reserve a full column on BOTH sides even for k=1
+    const extraW=2*(colW+SAT.EDGE), needH=perSide*rowH-SAT.GY;   // symmetric: cytoscape centres the widened box, so reserve a full column on BOTH sides even for k=1
     a.style({width:a.width()+extraW, height:Math.max(a.height(), a.height()+(needH-hostH))}); });   // reserve room beside the box for dagre
   return {sat, hosts, geom, sideOf};
 }
@@ -1261,7 +1261,7 @@ function satPlace(S, onlyIds){
     const a=cy.getElementById(id), p=a.position(), G=S.geom[id];
     const left=ms.filter(m=>S.sideOf(m)<0), right=ms.filter(m=>S.sideOf(m)>0);
     const place=(list,side)=>{ const y0=-((list.length-1)*G.rowH)/2; list.forEach((m,row)=>{
-      const dx=side*(G.hostW/2+SAT.GX+G.colW/2), dy=y0+row*G.rowH;
+      const dx=side*(G.hostW/2+SAT.EDGE+G.colW/2), dy=y0+row*G.rowH;
       m.position({x:p.x+dx, y:p.y+dy}); m.data("_host",id); m.data("_dx",dx); m.data("_dy",dy); }); };
     place(left,-1); place(right,1);
     a.removeStyle("width"); a.removeStyle("height"); });
