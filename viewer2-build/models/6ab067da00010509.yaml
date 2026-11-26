@@ -1,5 +1,5 @@
 id: gomodel:6ab067da00010509
-title: GPR179 positive regulation of TRPM1 channel gating in ON-bipolar cells_Visual
+title: GPR179 positive regulation of TRPM1 channel gating in Rod ON-bipolar cells_Visual
   Perception (Human)
 taxon: NCBITaxon:9606
 status: production
@@ -79,13 +79,16 @@ activities:
       part_of:
         type: GrossAnatomyAssociation
         evidence:
-        - term: ECO:0000314
-          reference: PMID:24222301
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - MGI:2443409
           provenances:
           - contributor:
             - https://orcid.org/0000-0003-1522-9900
-            date: '2026-10-23'
+            date: '2026-11-26'
             provided_by:
+            - https://www.uniprot.org
             - http://geneontology.org
         provenances:
         - contributor:
@@ -93,7 +96,7 @@ activities:
           date: '2026-10-23'
           provided_by:
           - http://geneontology.org
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -257,7 +260,7 @@ activities:
           date: '2026-10-23'
           provided_by:
           - http://geneontology.org
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -441,7 +444,7 @@ molecules:
           date: '2026-11-26'
           provided_by:
           - https://www.uniprot.org
-        term: CL:0000749
+        term: CL:0000751
 - id: gomodel:6ab067da00010509/6ab067da00010512
   term: UniProtKB:Q7Z4N2
 objects:
@@ -466,8 +469,8 @@ objects:
 - id: GO:0044292
   label: dendrite terminus
   type: gocam:Object
-- id: CL:0000749
-  label: ON-bipolar cell
+- id: CL:0000751
+  label: rod bipolar cell
   type: gocam:Object
 - id: ECO:0000314
   label: direct assay evidence used in manual assertion

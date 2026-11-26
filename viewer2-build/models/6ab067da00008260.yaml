@@ -1,6 +1,6 @@
 id: gomodel:6ab067da00008260
 title: GPR179 and RGS9BP organize RGS7/RGS11-Gbeta5 GAP activity on Galpha-o to enable
-  TRPM1 gating in ON-bipolar cells_Visual Perception (Human)
+  TRPM1 gating in Rod ON-bipolar cells_Visual Perception (Human)
 taxon: NCBITaxon:9606
 status: production
 date_modified: '2026-11-26'
@@ -69,17 +69,21 @@ activities:
       part_of:
         type: GrossAnatomyAssociation
         evidence:
-        - term: ECO:0000314
-          reference: PMID:24222301
+        - term: ECO:0000250
+          reference: GO_REF:0000024
+          with_objects:
+          - MGI:2443409
           provenances:
           - contributor:
             - https://orcid.org/0000-0003-1522-9900
-            date: '2026-10-16'
+            date: '2026-11-26'
+            provided_by:
+            - https://www.uniprot.org
         provenances:
         - contributor:
           - https://orcid.org/0000-0003-1522-9900
           date: '2026-10-16'
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -395,7 +399,7 @@ activities:
         - contributor:
           - https://orcid.org/0000-0003-1522-9900
           date: '2026-10-16'
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -557,7 +561,7 @@ activities:
           date: '2026-10-23'
           provided_by:
           - http://geneontology.org
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -717,7 +721,7 @@ activities:
         - contributor:
           - https://orcid.org/0000-0003-1522-9900
           date: '2026-10-19'
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -1030,7 +1034,7 @@ activities:
         - contributor:
           - https://orcid.org/0000-0003-1522-9900
           date: '2026-10-19'
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -1189,7 +1193,7 @@ activities:
           date: '2026-10-23'
           provided_by:
           - http://geneontology.org
-        term: CL:0000749
+        term: CL:0000751
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -1409,8 +1413,8 @@ objects:
 - id: GO:0044292
   label: dendrite terminus
   type: gocam:Object
-- id: CL:0000749
-  label: ON-bipolar cell
+- id: CL:0000751
+  label: rod bipolar cell
   type: gocam:Object
 - id: GO:1903539
   label: protein localization to postsynaptic membrane
@@ -1423,9 +1427,6 @@ objects:
   type: gocam:Object
 - id: ECO:0000353
   label: physical interaction evidence used in manual assertion
-  type: gocam:Object
-- id: ECO:0000314
-  label: direct assay evidence used in manual assertion
   type: gocam:Object
 - id: ECO:0000315
   label: mutant phenotype evidence used in manual assertion
@@ -1445,6 +1446,9 @@ objects:
 - id: UniProtKB:P09471
   label: GNAO1 Hsap
   type: gocam:Object
+- id: ECO:0000314
+  label: direct assay evidence used in manual assertion
+  type: gocam:Object
 - id: GO:0140677
   label: molecular function activator activity
   type: gocam:Object
@@ -1453,9 +1457,6 @@ objects:
   type: gocam:Object
 - id: GO:0005261
   label: monoatomic cation channel activity
-  type: gocam:Object
-- id: CL:0000751
-  label: rod bipolar cell
   type: gocam:Object
 - id: UniProtKB:Q7Z4N2
   label: TRPM1 Hsap

@@ -1,5 +1,5 @@
 id: gomodel:6ab067da00005098
-title: Cone-ON bipolar postsynapse organization via LRIT3_Visual Perception (Human)
+title: Cone ON-bipolar postsynapse organization via LRIT3_Visual Perception (Human)
 taxon: NCBITaxon:9606
 status: production
 date_modified: '2026-11-26'
@@ -133,7 +133,7 @@ activities:
           date: '2026-10-02'
           provided_by:
           - http://geneontology.org
-        term: CL:0000752
+        term: CL:0000749
         part_of:
           type: GrossAnatomyAssociation
           evidence:
@@ -153,7 +153,7 @@ activities:
             date: '2026-11-26'
             provided_by:
             - https://www.uniprot.org
-          term: CL:0000749
+          term: CL:0000752
   part_of:
     type: BiologicalProcessAssociation
     evidence:
@@ -1018,8 +1018,8 @@ objects:
 - id: GO:0044292
   label: dendrite terminus
   type: gocam:Object
-- id: CL:0000752
-  label: cone retinal bipolar cell
+- id: CL:0000749
+  label: ON-bipolar cell
   type: gocam:Object
 - id: GO:0007216
   label: G protein-coupled glutamate receptor signaling pathway
@@ -1038,9 +1038,6 @@ objects:
   type: gocam:Object
 - id: UniProtKB:Q7Z4N2
   label: TRPM1 Hsap
-  type: gocam:Object
-- id: CL:0000749
-  label: ON-bipolar cell
   type: gocam:Object
 - id: GO:1903539
   label: protein localization to postsynaptic membrane
@@ -1074,6 +1071,9 @@ objects:
   type: gocam:Object
 - id: GO:0030425
   label: dendrite
+  type: gocam:Object
+- id: CL:0000752
+  label: cone retinal bipolar cell
   type: gocam:Object
 provenances:
 - contributor:

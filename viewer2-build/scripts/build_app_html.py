@@ -200,9 +200,19 @@ function foldCL(id){   // a subclass is folded into the most general ancestor ce
   cands.sort((x,y)=>(_clAnc[x]||new Set()).size-(_clAnc[y]||new Set()).size);   // fewest ancestors = most general
   return cands[0];
 }
+// the cell type of a unit = the first CL in the CC part_of chain, together with any CL directly after it: a cell
+// part_of another cell (e.g. ON-bipolar cell part_of cone retinal bipolar cell = "ON cone bipolar", no such CL class) is
+// ONE combined cell type "CL:a+CL:b" with its own box; it is not folded into either part (user 2026-11-26)
+function cellTypeOf(a){
+  const ch=a.cc_chain||[]; const i=ch.findIndex(c=>/^CL:/.test(c.id||"")); if(i<0) return null;
+  const run=[]; for(let k=i;k<ch.length && /^CL:/.test(ch[k].id||"");k++) if(!run.some(r=>r.id===ch[k].id)) run.push(ch[k]);
+  if(run.length===1) return {id:run[0].id, label:run[0].label||run[0].id};
+  run.sort((x,y)=>x.id.localeCompare(y.id));
+  return {id:run.map(r=>r.id).join("+"), label:run.map(r=>r.label||r.id).join(" + "), combo:true};
+}
 function cellOf(a){   // first CL in the CC part_of chain (folded into a present parent cell type); else extracellular if the CC (or its chain) is under GO:0005576; else null
   const ch=a.cc_chain||[];
-  const cl=ch.find(c=>/^CL:/.test(c.id||""));
+  const cl=cellTypeOf(a);
   if(cl){ const f=CELL_ON?foldCL(cl.id):cl.id; return {id:f, label:(f===cl.id?(cl.label||cl.id):(PRESENT_CL[f]||f)), spec:cl.id, specLabel:cl.label||cl.id}; }
   if([a.cc_id].concat(ch.map(c=>c.id)).some(id=>/^GO:/.test(id||"") && isExtracellular(id))) return {id:EXTRA_ID, label:"extracellular"};
   return null;
@@ -1146,7 +1156,7 @@ async function doBuild(){
       loaded.forEach(id=>CACHE[id].activities.forEach(a=>{ if(a.cc_id) gos.add(a.cc_id); (a.mols||[]).forEach(x=>{ if(/^GO:/.test(x[4]||"")) gos.add(x[4]); });
         (a.cc_chain||[]).forEach(c=>{ if(/^GO:/.test(c.id||"")) gos.add(c.id); else if(/^CL:/.test(c.id||"")) cls.add(c.id); }); }));
       await Promise.all([ancestorsOf([...gos]), CELL_ON ? clAncestorsOf([...cls]) : Promise.resolve()]);
-      PRESENT_CL={}; loaded.forEach(id=>CACHE[id].activities.forEach(a=>{ const c=(a.cc_chain||[]).find(x=>/^CL:/.test(x.id||"")); if(c) PRESENT_CL[c.id]=c.label||c.id; })); }
+      PRESENT_CL={}; loaded.forEach(id=>CACHE[id].activities.forEach(a=>{ const c=cellTypeOf(a); if(c) PRESENT_CL[c.id]=c.label; })); }
     Object.keys(MCOL).forEach(k=>delete MCOL[k]);   // recolour from scratch: the n loaded models get the n most distinct colours
     loaded.slice().sort().forEach((m,i)=>MCOL[m]=palette[i%palette.length]);
     const g=buildGraph(loaded,currentMode(),showMols);
