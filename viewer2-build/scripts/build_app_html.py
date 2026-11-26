@@ -537,7 +537,11 @@ function cellCompartments(g){
   g.nodes.filter(n=>n.is_mol).forEach(m=>{
     const ps=new Set();
     g.edges.forEach(e=>{ const o = e.source===m.id ? e.target : (e.target===m.id ? e.source : null); if(o && byId[o] && byId[o].parent) ps.add(byId[o].parent); });
-    if(m.xmol) m.xzone=true;                 // located in the synaptic cleft: between the cells, never in a box
+    // located in the synaptic cleft: never in a box. Touching units of ONE cell -> just outside that cell's box, beside its
+    // unit (like other extracellular molecules); touching units of two cells -> between them, near its units (user 2026-11-26:
+    // the cleft molecules used to sit in one row between the columns, far from their units)
+    if(m.xmol){ const tops=new Set([...ps].map(b=>{ let t=b; while(boxes[t] && boxes[t].parent) t=boxes[t].parent; return t; }));
+      if(tops.size>1) m.xzone=true; else m.outer=true; }
     else if(m.loc_id && isExtracellular(m.loc_id)) m.outer=true;   // other extracellular location: just outside its cell box (user 2026-10-26)
     else if(ps.size===1) m.parent=[...ps][0];
     else if(ps.size>1) m.xzone=true;
@@ -1337,10 +1341,22 @@ function placeOuter(){
     const y=Math.max(my, (used[key]===undefined ? -Infinity : used[key]+10+h/2));
     m.position({x,y}); used[key]=y+h/2; });
 }
+// synaptic-cleft molecules linking units in two different cells: at the midpoint of their units (not in a row of their own),
+// nudged apart so they don't overlap each other; pushOutExtracellular() then moves any that lands in a box to its edge
+function placeBetween(){
+  if(!cy) return;
+  const ms=cy.nodes("[?is_mol][?xzone]").map(m=>{ const nb=m.neighborhood("node[!is_mol][!is_cell]");
+    return {m, x:nb.length?nb.reduce((a,u)=>a+u.position().x,0)/nb.length:m.position().x, y:nb.length?nb.reduce((a,u)=>a+u.position().y,0)/nb.length:m.position().y}; })
+    .sort((a,b)=>a.y-b.y);
+  const done=[];
+  ms.forEach(o=>{ const w=o.m.outerWidth(), h=o.m.outerHeight(); let y=o.y;
+    for(let k=0;k<50;k++){ const hit=done.find(d=>Math.abs(d.x-o.x)<(d.w+w)/2+10 && Math.abs(d.y-y)<(d.h+h)/2+10); if(!hit) break; y=hit.y+(hit.h+h)/2+10; }
+    o.m.position({x:o.x, y}); done.push({x:o.x, y, w, h}); });
+}
 function cellLayout(){
   if(!cy) return;
   const S=satPrep();
-  const units=cy.nodes("[!is_cell]").not(S.sat).filter(n=>!n.data("outer"));
+  const units=cy.nodes("[!is_cell]").not(S.sat).filter(n=>!n.data("outer") && !(n.data("is_mol") && n.data("xzone")));   // cleft molecules between two cells: placed by placeBetween()
   const outer=cy.nodes("[?outer]"), outerW=outer.length ? Math.max(...outer.map(m=>m.outerWidth())) : 0;
   const COLGAP=CELLGAP.COL + (outer.length ? 2*(outerW+OUTGAP) : 0);   // room for molecules drawn outside the boxes
   const groups={};   // box id ("" = loose) -> collection of non-satellite nodes directly in that box
@@ -1397,6 +1413,7 @@ function cellLayout(){
     perms(c).forEach(pp=>{ cols[ci]=pp; placeAll(); const sc=layoutScore(coreN,coreE); if(sc<bestS-1e-9){ bestS=sc; bestP=pp; } });
     cols[ci]=bestP; });
   placeAll();
+  placeBetween();
   placeOuter();
   orientIntra(cy.nodes("[!is_mol][!is_cell]"));
   pushOutExtracellular();
