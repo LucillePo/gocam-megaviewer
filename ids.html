@@ -11,6 +11,7 @@ button.ok{background:#1a8a3a;border-color:#1a8a3a} a{color:#2a6ef0} .note{backgr
 <!--NEWS-->
 <section style="background:#eef7ee;border-color:#b9dcb9"><h2>Viewer 2 — last updated 26 Nov 2026</h2>
 <ul style="margin:4px 0 0 18px;padding:0;font-size:14px;line-height:1.5">
+<li>Glutamate of 6ac817cf00001061 and 6ab067da00012618 merged again: both models share the kainate receptor unit it acts on (rule narrowed).</li>
 <li><b>New rule:</b> extracellular molecules are never merged across models (synaptic cleft glutamate and Ca²⁺ of 6ab067da00012618 and 6ab067da00012590 are now separate; same for glutamate of 6aff774700001973, 6a6ba88c00000472, 6ab067da00005098, 6ac817cf00001061). See "Viewer 2 rules" below.</li>
 <li><b>Cell types:</b> a cell part_of another cell in the CC chain (ON-bipolar cell part_of cone retinal bipolar cell) is one combined box, "ON-bipolar cell + cone retinal bipolar cell", separate from the rod bipolar units.</li>
 <li><b>Data:</b> vision list of 26 Nov: + cone ON-bipolar models 6aff774700001973, 6aff774700002358, 6aff774700002117; − 6b01078700000087.</li>
@@ -35,6 +36,7 @@ button.ok{background:#1a8a3a;border-color:#1a8a3a} a{color:#2a6ef0} .note{backgr
 <section style="background:#f4f4fb;border-color:#c7c7e0"><h2>Viewer 2 rules (curator decisions)</h2>
 <ul style="margin:4px 0 0 18px;padding:0;font-size:14px;line-height:1.5">
 <li><b>Extracellular molecules are never merged across models</b> (26 Nov 2026). A synaptic cleft belongs to its own synapse: a molecule released at one synapse is not the one received at another. Each extracellular molecule (located in extracellular region GO:0005576 or a subterm, incl. synaptic cleft) stays in its own model and is joined only where that model uses the same molecule (e.g. glutamate released by the SNARE complex and sensed by GRM6 in one model). An extracellular molecule touching only one unit is drawn once for that unit. To be narrowed case by case.</li>
+<li><b>Narrowed (26 Nov 2026):</b> when two models share the unit an extracellular molecule is connected to, the molecule merges: a molecule touching only that shared unit joins the other model's molecule on it (same chemical, direction, location), if there is exactly one. Example: glutamate of 6ac817cf00001061 and 6ab067da00012618 on their shared kainate receptor unit. Two release sites (molecules each touching several units) are never joined.</li>
 <li><b>Cell types:</b> the first CL in the CC part_of chain; a cell part_of another cell (ON-bipolar cell part_of cone retinal bipolar cell) is one combined cell type. Units in different cell types never merge.</li>
 <li><b>Unit merge:</b> same gene product(s) + MF + BP (with its part_of chain) + CC (with its part_of chain).</li>
 <li><b>Sources:</b> live production first, noctua-dev only for models not in production; refreshed daily.</li>

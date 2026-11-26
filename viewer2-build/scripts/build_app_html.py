@@ -442,8 +442,20 @@ function buildGraph(selectedIds, mode, showMols){
     if(XMOL_RULE==="link") acts.forEach(({mid,a})=>{ const an=actToNode[a.local_id];
       (a.mols||[]).forEach(x=>{ if(!/^CHEBI:/.test(x[2]||"") || !(x[4] && isExtracellular(x[4]))) return;
         const g=find(slotId(an,x[2],x[0],x[4],mid,x[3])); (xTouch[g]=xTouch[g]||new Set()).add(an+"|"+((x[0]==="has output")?"out":"in")); }); });
+    // NARROWED (user 2026-11-26, 6ac817cf00001061 + 6ab067da00012618): an extracellular molecule touching ONE unit joins the
+    // molecule of another model that touches that same (merged) unit with the same chemical, direction and location, when
+    // there is exactly one such molecule: the models share the unit connected to it. Two molecules that each touch several
+    // units (two release sites) are never joined, even through a shared unit.
+    const xByUnit={};   // unit|dir|chemical|location -> multi-unit extracellular groups touching it
+    if(XMOL_RULE==="link") acts.forEach(({mid,a})=>{ const an=actToNode[a.local_id];
+      (a.mols||[]).forEach(x=>{ if(!/^CHEBI:/.test(x[2]||"") || !(x[4] && isExtracellular(x[4]))) return;
+        const g=find(slotId(an,x[2],x[0],x[4],mid,x[3])); if(!xTouch[g] || xTouch[g].size<2) return;
+        const k=an+"|"+((x[0]==="has output")?"out":"in")+"|"+x[2]+"|"+x[4]; (xByUnit[k]=xByUnit[k]||new Set()).add(g); }); });
     const molGroup=(an,x,mid)=>{ const g=find(slotId(an,x[2],x[0],x[4],mid,x[3]));
-      return (xTouch[g] && xTouch[g].size===1) ? "XU|"+[...xTouch[g]][0]+"|"+x[2]+"|"+x[4] : g; };
+      if(!(xTouch[g] && xTouch[g].size===1)) return g;
+      const t=[...xTouch[g]][0], hit=xByUnit[t+"|"+x[2]+"|"+x[4]];
+      if(hit && hit.size===1) return [...hit][0];
+      return "XU|"+t+"|"+x[2]+"|"+x[4]; };
     const molNodes={};
     acts.forEach(({mid,a})=>{
       const anode=actToNode[a.local_id];
