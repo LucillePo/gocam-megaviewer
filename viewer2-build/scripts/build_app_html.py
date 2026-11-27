@@ -1520,7 +1520,14 @@ document.getElementById("png").onclick=()=>{
       showModal('<h1 style="font-size:15px;margin:0 0 6px">Network image</h1>'
         +'<div style="margin-bottom:8px"><a class="primary" href="'+url+'" download="'+name+'" style="display:inline-block;padding:6px 12px;background:#2a6ef0;color:#fff;border-radius:6px;text-decoration:none">&#11015; Download PNG</a> '
         +'<span class="sub">'+cv.width+' &times; '+cv.height+' px, '+(blob.size/1e6).toFixed(1)+' MB</span></div>'
-        +'<img src="'+url+'">');
+        // opened from JupyterLab: the file server sends "sandbox allow-scripts", the browser then blocks downloads (user 2026-11-27)
+        +((window.origin==="null")
+          ? '<div style="margin:0 0 8px;padding:6px 8px;background:#fff4e5;border:1px solid #f0c27a;border-radius:6px;font-size:13px">'
+            +'<b>Download is blocked in this tab</b>: this copy is opened from JupyterLab, which sandboxes HTML files. '
+            +'Right-click the image below &rarr; <b>Save image as&hellip;</b>, or use the public page '
+            +'<span class="mono">lucillepo.github.io/gocam-megaviewer/viewer2.html</span>, where Download works.</div>'
+          : '<div class="sub" style="margin:0 0 8px">If the download does not start, right-click the image &rarr; Save image as&hellip;</div>')
+        +'<img src="'+url+'" title="right-click &rarr; Save image as&hellip;">');
     }, "image/png");
   };
   img.onerror=function(){ showErr("Could not render PNG image."); };
