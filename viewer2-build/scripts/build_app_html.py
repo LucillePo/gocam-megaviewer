@@ -123,7 +123,7 @@ __LIBS__
         <div><span class="dot" style="background:#dcecff;border-color:#e67e22;border-style:dashed"></span> no cell type (CL) in model <span style="color:#777">(drag into a box)</span></div>
       </div>
     </div>
-    <div id="detail"><div class="sub" style="margin-top:12px">Click a node for details.</div></div>
+    <div id="detail" style="margin-top:12px;border-top:1px solid #dde;padding-top:8px"><div class="sub">Click a node for details.</div></div>
     <div id="cats" style="display:none;margin-top:14px;border-top:1px solid #dde;padding-top:6px">
       <h2>Colours</h2>
       <div class="row">default scheme:
