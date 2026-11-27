@@ -3877,6 +3877,9 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
   #modal textarea{width:100%;box-sizing:border-box;font-family:ui-monospace,Menlo,monospace;font-size:11px;border:1px solid #ccd;border-radius:5px;padding:6px}
   #modal img{max-width:100%;height:auto;border:1px solid #ddd;border-radius:4px}
   #modalmsg{font-size:12px;color:#2a7d2a;min-height:14px}
+  #colpop{position:fixed;z-index:50;display:none;background:#fff;border:1px solid #9ab;border-radius:8px;padding:8px 10px;box-shadow:0 6px 22px rgba(0,0,0,.25);font-size:12px;max-width:300px}
+  #colpop .ttl{font-weight:bold;margin-right:18px} #colpop .x{position:absolute;top:4px;right:8px;cursor:pointer;color:#666;font-size:15px}
+  #colpop .sw{display:inline-block;width:20px;height:20px;border:1px solid #999;border-radius:4px;margin:3px 4px 0 0;cursor:pointer;vertical-align:middle}
   #side{width:320px;min-width:0;flex:0 0 auto;border-left:1px solid #dde;overflow:auto;padding:12px 14px;box-sizing:border-box}
   h1{font-size:14px;margin:0 0 6px}
   h2{font-size:12px;margin:12px 0 4px;color:#445}
@@ -3906,7 +3909,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 11:16</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 11:31</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange. Move several at once: Shift/Ctrl/Cmd-click them (or Shift-drag a rectangle on the background), then drag one; Esc or a click on the background clears the selection.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3990,9 +3993,10 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <div class="row sub">Click a swatch to apply it to the selected unit; click its × to remove just that colour.</div>
       <div class="row sub" style="margin-top:8px">Give a whole model a colour (overrides the default):</div>
       <div id="modeltags"></div>
-      <div class="row sub" style="margin-top:6px">…or click any unit to give it its own colour.</div>
+      <div class="row sub" style="margin-top:6px">…or click any unit or molecule: a colour box opens next to it (pick a colour, ★ keeps it in My colours, "back to default" removes it).</div>
     </div>
     <div id="detail"><div class="sub" style="margin-top:12px">Click a node for details.</div></div>
+    <div id="colpop"></div>
   </div>
 </div>
 
@@ -4182,6 +4186,29 @@ function wireColourRow(root, apply){   // apply(colour|null)
 function modelCurrentColour(mid){
   const us=cy.nodes("[!is_mol][!is_cell]").filter(n=>(n.data("models")||[]).includes(mid));
   const cs=new Set(us.map(n=>nodeOverride(n)||"")); return (cs.size===1 && [...cs][0]) ? [...cs][0] : null;
+}
+// colour box next to the clicked unit / molecule (user 2026-11-27: the colour row in the side panel was out of sight)
+function hideColPop(){ const p=document.getElementById("colpop"); if(p) p.style.display="none"; }
+function showColPop(node){
+  const pop=document.getElementById("colpop"); if(!pop||!cy) return;
+  const cur=nodeOverride(node), def=nodeFill(node);
+  pop.innerHTML=`<span class="x" title="close">&times;</span><span class="ttl">${(node.data("gp")||"").replace(/</g,"&lt;")}</span>`+
+    colourRowHtml("colour", cur||def, !!cur)+
+    (PALETTE.length?`<div style="margin-top:4px"><span class="sub">My colours:</span><br>`+PALETTE.map(c=>`<span class="sw" data-c="${c}" title="${c}" style="background:${c}"></span>`).join("")+`</div>`
+                   :`<div class="sub" style="margin-top:4px">My colours is empty: pick a colour, then ★ to keep it.</div>`);
+  const apply=c=>{ setNodeColor(node,c); const side=document.querySelector("#unitcolrow .colpick, #detail > .row .colpick"); };
+  wireColourRow(pop, c=>{ apply(c); if(c===null){ const pk=pop.querySelector(".colpick"); if(pk) pk.value=nodeFill(node); } });
+  pop.querySelector(".colsave").addEventListener("click",()=>showColPop(node));   // refresh the swatches
+  pop.querySelectorAll(".sw").forEach(sw=>sw.onclick=()=>{ pushHistory(); setNodeColor(node,sw.dataset.c); showColPop(node); flash("applied "+sw.dataset.c); });
+  pop.querySelector(".x").onclick=hideColPop;
+  // place it beside the node, inside the graph area
+  const r=document.getElementById("cy").getBoundingClientRect(), bb=node.renderedBoundingBox();
+  pop.style.display="block";
+  const w=pop.offsetWidth, h=pop.offsetHeight;
+  let x=r.left+bb.x2+12, y=r.top+bb.y1;
+  if(x+w>r.right) x=r.left+bb.x1-w-12;
+  x=Math.max(r.left+4, Math.min(x, r.right-w-4)); y=Math.max(r.top+4, Math.min(y, r.bottom-h-4));
+  pop.style.left=x+"px"; pop.style.top=y+"px";
 }
 function showModelColour(mid){   // colour row for a whole model, under the unit details
   COLOR_TARGET={model:mid};
@@ -4577,7 +4604,7 @@ function wireInteractions(){
   cy.on("tap","node",evt=>{
     const n=evt.target.data();
     cy.elements().removeClass("hi faded"); evt.target.addClass("hi");
-    if(n.is_cell){
+    if(n.is_cell){ hideColPop();
       const kids=evt.target.descendants("[!is_mol][!is_cell]");
       document.getElementById("detail").innerHTML=
         `<h1>${n.extra?"extracellular":(n.label||"")}</h1>`+
@@ -4591,6 +4618,7 @@ function wireInteractions(){
     }
     selectedSig = n.is_mol ? null : n.sig;
     COLOR_TARGET={node:n.id};
+    showColPop(evt.target);
     if(n.is_mol){
       document.getElementById("detail").innerHTML=
         `<h1>◦ ${n.gp||"?"}</h1><div class="row"><span class="k">id</span><span class="mono">${n.gp_id||""}</span></div>`+
@@ -4632,9 +4660,10 @@ function wireInteractions(){
     wireColourRow(document.getElementById("unitcolrow"), c=>setNodeColor(evt.target,c));
     const ps=document.getElementById("placesel"); if(ps) ps.onchange=()=>placeUnit(n.id, ps.value||null);
   });
-  cy.on("tap",evt=>{ if(evt.target===cy){ cy.elements().removeClass("hi faded"); selectedSig=null; COLOR_TARGET=null; } });
+  cy.on("tap",evt=>{ if(evt.target===cy){ cy.elements().removeClass("hi faded"); selectedSig=null; COLOR_TARGET=null; hideColPop(); } });
+  cy.on("pan zoom",hideColPop); cy.on("grab","node",hideColPop);
   cy.on("grabon","node",()=>pushHistory());   // snapshot before a drag (once, also when several selected nodes move), so undo reverts it
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && cy) cy.nodes(":selected").unselect(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && cy){ cy.nodes(":selected").unselect(); hideColPop(); } });
 }
 
 // --- resizable cell boxes: a corner grip (DOM overlay) sets the box's min-width/min-height; it grows right/down ---
