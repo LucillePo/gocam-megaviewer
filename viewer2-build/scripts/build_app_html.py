@@ -149,7 +149,7 @@ __LIBS__
         <input type="color" id="palAdd" value="#3f8fd0" style="width:26px;height:20px;vertical-align:middle;padding:0;border:1px solid #ccd">
         <button id="palAddBtn">add</button></div>
       <div class="row sub">Click a swatch to apply it to the selected unit; click its × to remove just that colour.</div>
-      <div class="row sub" style="margin-top:6px">…or click any unit or molecule: a colour box opens next to it (pick a colour, ★ keeps it in My colours, "back to default" removes it).</div>
+      <div class="row sub" style="margin-top:6px">…or click any unit or molecule: its colour row is under its details above (pick a colour, ★ keeps it in My colours, "back to default" removes it).</div>
     </div>
     <div id="colpop"></div>
   </div>
@@ -772,8 +772,7 @@ function wireInteractions(){
       return;
     }
     selectedSig = n.is_mol ? null : n.sig;
-    COLOR_TARGET={node:n.id};
-    showColPop(evt.target);
+    COLOR_TARGET={node:n.id};   // colour row is in the details panel; no pop-up box (user 2026-11-27: "I don't want this window")
     if(n.is_mol){
       document.getElementById("detail").innerHTML=
         `<h1>◦ ${n.gp||"?"}</h1><div class="row"><span class="k">id</span><span class="mono">${n.gp_id||""}</span></div>`+
