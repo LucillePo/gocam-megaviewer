@@ -126,7 +126,8 @@ __LIBS__
         <div><span class="dot" style="background:#dcecff;border-color:#e67e22;border-style:dashed"></span> no cell type (CL) in model <span style="color:#777">(drag into a box)</span></div>
       </div>
     </div>
-    <div id="cats" style="display:none">
+    <div id="detail"><div class="sub" style="margin-top:12px">Click a node for details.</div></div>
+    <div id="cats" style="display:none;margin-top:14px;border-top:1px solid #dde;padding-top:6px">
       <h2>Colours</h2>
       <div class="row">default scheme:
         <select id="colorBy">
@@ -144,7 +145,6 @@ __LIBS__
       <div id="modeltags"></div>
       <div class="row sub" style="margin-top:6px">…or click any unit or molecule: a colour box opens next to it (pick a colour, ★ keeps it in My colours, "back to default" removes it).</div>
     </div>
-    <div id="detail"><div class="sub" style="margin-top:12px">Click a node for details.</div></div>
     <div id="colpop"></div>
   </div>
 </div>
