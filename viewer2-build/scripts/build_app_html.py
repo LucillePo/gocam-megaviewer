@@ -127,7 +127,8 @@ __LIBS__
       <h2>Colours</h2>
       <div class="row">default scheme:
         <select id="colorBy">
-          <option value="bridge" selected>bridge / single</option>
+          <option value="grey" selected>all light grey</option>
+          <option value="bridge">bridge / single</option>
           <option value="model">by model</option>
         </select>
         <button id="clearcol">reset all</button>
@@ -169,7 +170,8 @@ const palette = ["#ffe98a","#a9d6ff","#ffbdbd","#b4efbe","#d3c4ff","#ffd6a6","#d
 const MCOL = {};   // assigned per build over the LOADED models only (see doBuild), not over every baked model
 const ECOL = {pos:"#2e8b57", neg:"#c0392b", input:"#888888", mol:"#7a97a8"};
 let cy = null;
-let colorBy = "bridge";  // default scheme on first build: bridge/single  (alt: "model" = one colour per model)
+let colorBy = "grey";  // default scheme (user 2026-11-27): every unit and molecule light grey; alt: "bridge" = bridge/single, "model" = one colour per model
+const GREY={fill:"#e6e6e6", stroke:"#8c8c8c"};
 
 // --- persisted free colour overrides, keyed by unit signature ---
 function lsGet(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch(e){ return d; } }
@@ -280,18 +282,20 @@ function darken(hex,f){   // return a slightly darker shade of a #rrggbb colour
   return "#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
 }
 function schemeFill(n){
+  if(colorBy==="grey") return GREY.fill;
   if(colorBy==="model") return MCOL[(n.data("models")||[])[0]]||"#dcecff";
   return n.data("bridge")?"#ffd166":"#dcecff";  // bridge/single (complexes coloured like any other unit)
 }
 function nodeFill(n){
-  if(n.data("is_mol")) return "#eaf6e6";
+  if(n.data("is_mol")) return colorBy==="grey" ? GREY.fill : "#eaf6e6";
   return OVERRIDE[n.data("sig")] || OVERRIDE[n.data("bsig")] || schemeFill(n);   // free override first (bsig = same unit without the cell part, so colours carry across layouts), else the default scheme
 }
 function nodeStroke(n){
-  if(n.data("is_mol")) return "#8ab17d";
+  if(n.data("is_mol")) return colorBy==="grey" ? GREY.stroke : "#8ab17d";
   if(CELL_ON && n.data("nocl")) return "#e67e22";       // no cell type: orange dashed outline (style .nocl)
   const o=OVERRIDE[n.data("sig")] || OVERRIDE[n.data("bsig")];
   if(o) return darken(o);                              // darker shade of the chosen colour
+  if(colorBy==="grey") return GREY.stroke;
   if(colorBy==="model") return darken(schemeFill(n));
   return n.data("bridge")?"#a67400":"#2a63a8";
 }
