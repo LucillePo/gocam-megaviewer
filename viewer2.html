@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 08:29</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 10:07</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange. Move several at once: Shift/Ctrl/Cmd-click them (or Shift-drag a rectangle on the background), then drag one; Esc or a click on the background clears the selection.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -3978,7 +3978,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
       <h2>Colours</h2>
       <div class="row">default scheme:
         <select id="colorBy">
-          <option value="grey" selected>all light grey</option>
+          <option value="grey" selected>light grey (molecules green)</option>
           <option value="bridge">bridge / single</option>
           <option value="model">by model</option>
         </select>
@@ -4021,8 +4021,8 @@ const palette = ["#ffe98a","#a9d6ff","#ffbdbd","#b4efbe","#d3c4ff","#ffd6a6","#d
 const MCOL = {};   // assigned per build over the LOADED models only (see doBuild), not over every baked model
 const ECOL = {pos:"#2e8b57", neg:"#c0392b", input:"#888888", mol:"#7a97a8"};
 let cy = null;
-let colorBy = "grey";  // default scheme (user 2026-11-27): every unit and molecule light grey; alt: "bridge" = bridge/single, "model" = one colour per model
-const GREY={fill:"#e6e6e6", stroke:"#8c8c8c"};
+let colorBy = "grey";  // default scheme (user 2026-11-27): every unit light grey, molecules light green; alt: "bridge" = bridge/single, "model" = one colour per model
+const GREY={fill:"#f2f2f2", stroke:"#8c8c8c"};   // fill lightened #e6e6e6 -> #f2f2f2 (user 2026-11-27)
 
 // --- persisted free colour overrides, keyed by unit signature ---
 function lsGet(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch(e){ return d; } }
@@ -4093,15 +4093,17 @@ function renderPalette(){
   const el=document.getElementById("palette"); if(!el) return;
   el.innerHTML = PALETTE.map(c=>
     `<span style="position:relative;display:inline-block;margin:0 5px 0 2px;vertical-align:middle">`
-    +`<span class="swatchbtn" data-c="${c}" title="${c} — click to apply to selected unit"`
+    +`<span class="swatchbtn" data-c="${c}" title="${c} — click to apply to the unit, molecule or model you clicked last"`
     +` style="display:inline-block;width:18px;height:18px;border:1px solid #999;border-radius:3px;background:${c};cursor:pointer;vertical-align:middle"></span>`
     +`<span class="swatchdel" data-c="${c}" title="remove this colour"`
     +` style="position:absolute;top:-6px;right:-7px;width:13px;height:13px;line-height:11px;text-align:center;font-size:10px;color:#611;background:#fff;border:1px solid #999;border-radius:50%;cursor:pointer">×</span>`
     +`</span>`).join("");
   el.querySelectorAll(".swatchbtn").forEach(s=>s.onclick=()=>{
     const c=s.dataset.c; const pa=document.getElementById("palAdd"); if(pa) pa.value=c;   // "get" the colour
-    if(selectedSig){ pushHistory(); setUnitColor(selectedSig, c); flash("applied "+c); }
-    else { flash("got "+c+" — click a unit to apply it"); }
+    if(COLOR_TARGET && COLOR_TARGET.model){ pushHistory(); setModelColor(COLOR_TARGET.model, c); showModelColour(COLOR_TARGET.model); flash("applied "+c+" to model "+COLOR_TARGET.model.split(":")[1]); }
+    else if(COLOR_TARGET && COLOR_TARGET.node && cy && cy.getElementById(COLOR_TARGET.node).length){ pushHistory(); setNodeColor(cy.getElementById(COLOR_TARGET.node), c);
+      const pk=document.querySelector("#detail .colpick"); if(pk) pk.value=c; const rs=document.querySelector("#detail .colreset"); if(rs) rs.disabled=false; const st=document.querySelector("#detail .colstate"); if(st) st.textContent="your colour"; flash("applied "+c); }
+    else { flash("got "+c+" — click a unit, a molecule or a model first"); }
   });
   el.querySelectorAll(".swatchdel").forEach(s=>s.onclick=(e)=>{
     e.stopPropagation(); const c=s.dataset.c;
@@ -4138,11 +4140,11 @@ function schemeFill(n){
   return n.data("bridge")?"#ffd166":"#dcecff";  // bridge/single (complexes coloured like any other unit)
 }
 function nodeFill(n){
-  if(n.data("is_mol")) return colorBy==="grey" ? GREY.fill : "#eaf6e6";
+  if(n.data("is_mol")) return nodeOverride(n) || "#eaf6e6";   // molecules light green by default in every scheme (user 2026-11-27); own colour if given
   return OVERRIDE[n.data("sig")] || OVERRIDE[n.data("bsig")] || schemeFill(n);   // free override first (bsig = same unit without the cell part, so colours carry across layouts), else the default scheme
 }
 function nodeStroke(n){
-  if(n.data("is_mol")) return colorBy==="grey" ? GREY.stroke : "#8ab17d";
+  if(n.data("is_mol")){ const o=nodeOverride(n); return o ? darken(o) : "#8ab17d"; }
   if(CELL_ON && n.data("nocl")) return "#e67e22";       // no cell type: orange dashed outline (style .nocl)
   const o=OVERRIDE[n.data("sig")] || OVERRIDE[n.data("bsig")];
   if(o) return darken(o);                              // darker shade of the chosen colour
@@ -4154,10 +4156,44 @@ function applyColors(){
   if(!cy) return;
   cy.nodes("[!is_cell]").forEach(n=>{ n.style("background-color",nodeFill(n)); n.style("border-color",nodeStroke(n)); });
 }
-function setUnitColor(sig,color){ if(color) OVERRIDE[sig]=color; else delete OVERRIDE[sig]; lsSet("gocam-colors",OVERRIDE); applyColors(); }
+function setUnitColor(sig,color){ const n=cy?cy.nodes().filter(x=>x.data("sig")===sig):null; if(n&&n.length) return setNodeColor(n[0],color);
+  if(color) OVERRIDE[sig]=color; else delete OVERRIDE[sig]; lsSet("gocam-colors",OVERRIDE); applyColors(); }
+// a node's own colour: stored under its layout-independent key (bsig), so it survives switching layout; "back to default"
+// removes every key it could be stored under (sig and bsig), so the colour really goes (user 2026-11-27)
+function nodeOverride(n){ return OVERRIDE[n.data("sig")] || (n.data("bsig") ? OVERRIDE[n.data("bsig")] : undefined); }
+function setNodeColor(n,color,noApply){ const s=n.data("sig"), b=n.data("bsig");
+  delete OVERRIDE[s]; if(b) delete OVERRIDE[b]; if(color) OVERRIDE[b||s]=color;
+  if(!noApply){ lsSet("gocam-colors",OVERRIDE); applyColors(); } }
+let COLOR_TARGET=null;   // what a click on a "My colours" swatch colours: {node:id} or {model:mid}; set by clicking a node / a model
+function colourRowHtml(label, cur, custom){
+  return `<div class="row" style="margin-top:8px"><span class="k">${label}</span>`+
+    `<input type="color" class="colpick" value="${cur}"> `+
+    `<button class="colsave" title="add this colour to My colours">★ add to My colours</button> `+
+    `<button class="colreset"${custom?"":" disabled"}>back to default</button> `+
+    `<span class="sub colstate">${custom?"your colour":"default colour"}</span></div>`;
+}
+function wireColourRow(root, apply){   // apply(colour|null)
+  const pk=root.querySelector(".colpick"), sv=root.querySelector(".colsave"), rs=root.querySelector(".colreset"), st=root.querySelector(".colstate");
+  const mark=c=>{ if(rs) rs.disabled=!c; if(st) st.textContent=c?"your colour":"default colour"; };
+  if(pk){ pk.addEventListener("focus",pushHistory); pk.oninput=()=>{ apply(pk.value); mark(true); }; pk.onchange=()=>{ apply(pk.value); addToPalette(pk.value); mark(true); }; }
+  if(sv) sv.onclick=()=>{ addToPalette(pk.value); flash("added "+pk.value+" to My colours"); };
+  if(rs) rs.onclick=()=>{ pushHistory(); apply(null); mark(false); flash("back to the default colour"); };
+}
+function modelCurrentColour(mid){
+  const us=cy.nodes("[!is_mol][!is_cell]").filter(n=>(n.data("models")||[]).includes(mid));
+  const cs=new Set(us.map(n=>nodeOverride(n)||"")); return (cs.size===1 && [...cs][0]) ? [...cs][0] : null;
+}
+function showModelColour(mid){   // colour row for a whole model, under the unit details
+  COLOR_TARGET={model:mid};
+  const box=document.getElementById("modelcolrow"); if(!box) return;
+  const cur=modelCurrentColour(mid);
+  box.innerHTML=`<div class="row" style="margin-top:8px"><b>Model ${mid.split(":")[1]}</b> <span class="sub">(highlighted; colours its units)</span></div>`+
+    colourRowHtml("model colour", cur||MCOL[mid]||"#3f8fd0", !!cur);
+  wireColourRow(box, c=>setModelColor(mid,c));
+}
 function setModelColor(mid,color){
   if(!cy) return;
-  cy.nodes("[!is_mol][!is_cell]").forEach(n=>{ if((n.data("models")||[]).includes(mid)){ if(color) OVERRIDE[n.data("sig")]=color; else delete OVERRIDE[n.data("sig")]; }});
+  cy.nodes("[!is_mol][!is_cell]").forEach(n=>{ if((n.data("models")||[]).includes(mid)) setNodeColor(n,color,true); });
   lsSet("gocam-colors",OVERRIDE); applyColors();
 }
 function clearAllOverrides(){ pushHistory(); OVERRIDE={}; lsSet("gocam-colors",OVERRIDE); applyColors(); }
@@ -4449,7 +4485,7 @@ function render(g, selectedIds){
       {selector:".faded",style:{"opacity":0.12}},
       {selector:".hi",style:{"border-color":"#1a1a2e","border-width":4}},
       // several nodes selected (Shift/Ctrl/Cmd-click, or Shift-drag a rectangle): blue, and they move together (user 2026-11-26)
-      {selector:"node:selected[!is_cell]",style:{"overlay-color":"#1f6feb","overlay-opacity":0.28,"overlay-padding":"8px"}},
+      {selector:"node:selected[!is_cell]",style:{"outline-width":5,"outline-color":"#1f6feb","outline-offset":4,"outline-opacity":1}},   // outline, not a tint: the node keeps its colour (user 2026-11-27)
       {selector:"node:selected[?is_cell]",style:{"border-color":"#1f6feb","border-width":8}},
     ],
     layout:{name:"preset"}, // we position manually below
@@ -4554,12 +4590,15 @@ function wireInteractions(){
       return;
     }
     selectedSig = n.is_mol ? null : n.sig;
+    COLOR_TARGET={node:n.id};
     if(n.is_mol){
       document.getElementById("detail").innerHTML=
         `<h1>◦ ${n.gp||"?"}</h1><div class="row"><span class="k">id</span><span class="mono">${n.gp_id||""}</span></div>`+
         (n.loc?`<div class="row"><span class="k" title="located in (RO:0001025)">located in</span>${n.loc} <span class="mono">${n.loc_id||""}</span>${n.xmol?' <span class="sub">(extracellular: never merged across models; a synaptic cleft belongs to its own synapse)</span>':''}</div>`:"")+
         `<div class="row"><span class="k">in models</span>${(n.models||[]).map(id=>id.split(":")[1]).join(", ")}${n.bridge?' <b style="color:#c98a00">↔ bridge</b>':''}</div>`+
-        `<div class="row sub">molecule (input/output of activities)</div>`;
+        `<div class="row sub">molecule (input/output of activities)</div>`+
+        colourRowHtml("colour", nodeOverride(evt.target)||nodeFill(evt.target), !!nodeOverride(evt.target));
+      wireColourRow(document.getElementById("detail"), c=>setNodeColor(evt.target,c));
       return;
     }
     const mols=(n.mols||[]).map(m=>`<span class="tag">${m[0]}: ${m[1]}${m[2]?` <span class="mono">${m[2]}</span>`:""}${m[3]?` <i>in ${m[3]}</i>`:""}</span>`).join(" ")||"<span class='sub'>none</span>";
@@ -4587,17 +4626,13 @@ function wireInteractions(){
             `</select><div class="sub">View only: the model is not changed. Save layout keeps it. Or drag the unit onto a box; drag it out of the box to make it loose again.</div></div>`
         : `<div class="row" style="margin-top:6px"><span class="k">cell box</span>${n.cell_key===EXTRA_ID?"extracellular":(n.cell_label+" <span class='mono'>"+n.cell_key+"</span>")}</div>`+
           (n.cell_spec||[]).map(x=>`<div class="row"><span class="k" title="cell type in the model; it is_a the box's cell type, so it is shown in that box">&nbsp;&nbsp;&#8627; in model</span>${x.label} <span class="mono">${x.id}</span> <span class="sub">(${x.models.map(m=>m.split(":")[1]).join(", ")})</span></div>`).join("")) : "")+
-      `<div class="row" style="margin-top:8px"><span class="k">colour</span>`+
-        `<input type="color" id="unitcol" value="${OVERRIDE[n.sig]||schemeFill(evt.target)}"> `+
-        `<button id="unitsave">★ save colour</button> <button id="unitreset">reset</button>`+
-        (OVERRIDE[n.sig]?` <span class="sub">custom</span>`:` <span class="sub">default</span>`)+`</div>`;
-    document.querySelectorAll(".tag.model").forEach(t=>t.onclick=()=>spotlight(t.dataset.m));
-    const uc=document.getElementById("unitcol"); if(uc){ uc.addEventListener("focus",pushHistory); uc.oninput=()=>setUnitColor(n.sig,uc.value); uc.onchange=()=>addToPalette(uc.value); }
-    const us=document.getElementById("unitsave"); if(us) us.onclick=()=>{ addToPalette(uc.value); flash("saved "+uc.value+" to My colours"); };
-    const ur=document.getElementById("unitreset"); if(ur) ur.onclick=()=>{ pushHistory(); setUnitColor(n.sig,null); };
+      `<div id="unitcolrow">`+colourRowHtml("colour", nodeOverride(evt.target)||schemeFill(evt.target), !!nodeOverride(evt.target))+`</div>`+
+      `<div class="row sub">Click a model number above to colour that whole model.</div><div id="modelcolrow"></div>`;
+    document.querySelectorAll(".tag.model").forEach(t=>t.onclick=()=>{ spotlight(t.dataset.m); showModelColour(t.dataset.m); });
+    wireColourRow(document.getElementById("unitcolrow"), c=>setNodeColor(evt.target,c));
     const ps=document.getElementById("placesel"); if(ps) ps.onchange=()=>placeUnit(n.id, ps.value||null);
   });
-  cy.on("tap",evt=>{ if(evt.target===cy){ cy.elements().removeClass("hi faded"); selectedSig=null; } });
+  cy.on("tap",evt=>{ if(evt.target===cy){ cy.elements().removeClass("hi faded"); selectedSig=null; COLOR_TARGET=null; } });
   cy.on("grabon","node",()=>pushHistory());   // snapshot before a drag (once, also when several selected nodes move), so undo reverts it
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && cy) cy.nodes(":selected").unselect(); });
 }
