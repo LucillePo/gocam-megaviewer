@@ -117,9 +117,6 @@ __LIBS__
       <div><span class="swatch" style="border-top-color:#c0392b"></span> negatively regulates</div>
       <div><span class="swatch" style="border-top-color:#888"></span> provides input for</div>
       <div><span class="swatch" style="border-top-color:#7a97a8;border-top-style:dashed"></span> input / output (molecule)</div>
-      <div style="margin-top:6px"><span class="dot" style="background:#ffd166;border-color:#a67400"></span> bridge node <span style="color:#777">(shared by &gt;1 model)</span></div>
-      <div><span class="dot" style="background:#dcecff;border-color:#2a63a8"></span> single node <span style="color:#777">(1 model)</span></div>
-      <div><span class="dot" style="background:#eaf6e6;border-color:#8ab17d"></span> molecule node</div>
       <div id="celllegend" style="display:none">
         <div style="margin-top:6px"><span class="dot" style="border-radius:3px;background:#e8f1fb;border-color:#6d8fb8"></span> cell type box (CL)</div>
         <div class="sub">extracellular units: no box, placed between the cells</div>
@@ -137,12 +134,21 @@ __LIBS__
         </select>
         <button id="clearcol">reset all</button>
       </div>
+      <!-- legend of the chosen scheme only (user 2026-11-27) -->
+      <div class="schemeleg" data-s="grey" style="margin:4px 0 0 4px">
+        <div><span class="dot" style="background:#f2f2f2;border-color:#8c8c8c"></span> activity unit</div>
+        <div><span class="dot" style="background:#eaf6e6;border-color:#8ab17d"></span> molecule node</div></div>
+      <div class="schemeleg" data-s="bridge" style="margin:4px 0 0 4px">
+        <div><span class="dot" style="background:#ffd166;border-color:#a67400"></span> bridge node <span style="color:#777">(shared by &gt;1 model)</span></div>
+        <div><span class="dot" style="background:#dcecff;border-color:#2a63a8"></span> single node <span style="color:#777">(1 model)</span></div>
+        <div><span class="dot" style="background:#eaf6e6;border-color:#8ab17d"></span> molecule node</div></div>
+      <div class="schemeleg" data-s="model" style="margin:4px 0 0 4px">
+        <div class="row sub">Colour of each model (change it here; "reset" goes back to the scheme colour):</div>
+        <div id="modeltags"></div></div>
       <div class="row" style="margin-top:6px">My colours: <span id="palette"></span>
         <input type="color" id="palAdd" value="#3f8fd0" style="width:26px;height:20px;vertical-align:middle;padding:0;border:1px solid #ccd">
         <button id="palAddBtn">add</button></div>
       <div class="row sub">Click a swatch to apply it to the selected unit; click its × to remove just that colour.</div>
-      <div class="row sub" style="margin-top:8px">Give a whole model a colour (overrides the default):</div>
-      <div id="modeltags"></div>
       <div class="row sub" style="margin-top:6px">…or click any unit or molecule: a colour box opens next to it (pick a colour, ★ keeps it in My colours, "back to default" removes it).</div>
     </div>
     <div id="colpop"></div>
@@ -276,7 +282,7 @@ function restoreSnap(s){
   lsSet("gocam-colors",OVERRIDE); lsSet("gocam-palette",PALETTE);
   const sel=document.getElementById("colorBy"); if(sel) sel.value=colorBy;
   if(cy) cy.nodes("[!is_cell]").forEach(n=>{ const p=s.pos[n.data("sig")]; if(p) n.position(p); });
-  renderPalette(); applyColors();
+  renderPalette(); applyColors(); if(typeof showSchemeLegend==="function") showSchemeLegend();
 }
 function undo(){ if(!HISTORY.length){ flash("nothing to undo"); return; } restoreSnap(HISTORY.pop()); flash("reverted"); }
 
@@ -1566,7 +1572,7 @@ document.getElementById("png").onclick=()=>{
 function applyState(s){
   if(!s||!cy) return;
   pushHistory();   // so loading a layout can be undone
-  if(s.scheme){ colorBy=s.scheme; const sel=document.getElementById("colorBy"); if(sel) sel.value=s.scheme; }
+  if(s.scheme){ colorBy=s.scheme; const sel=document.getElementById("colorBy"); if(sel) sel.value=s.scheme; if(typeof showSchemeLegend==="function") showSchemeLegend(); }
   if(s.colors){ OVERRIDE=s.colors; lsSet("gocam-colors",OVERRIDE); }
   if(s.palette){ PALETTE=s.palette; lsSet("gocam-palette",PALETTE); renderPalette(); }
   if(s.layout){ cy.nodes("[!is_cell]").forEach(n=>{ const p=s.layout[n.data("sig")]; if(p) n.position(p); }); cy.fit(null,40); }
@@ -1576,7 +1582,7 @@ function applyState(s){
 // full restore: rebuild the saved models (if the blob carries IDs) then apply layout+colours
 async function restoreState(s){
   if(!s || typeof s!=="object") throw new Error("bad state");
-  if(s.scheme){ colorBy=s.scheme; const sel=document.getElementById("colorBy"); if(sel) sel.value=s.scheme; }
+  if(s.scheme){ colorBy=s.scheme; const sel=document.getElementById("colorBy"); if(sel) sel.value=s.scheme; if(typeof showSchemeLegend==="function") showSchemeLegend(); }
   if(s.colors) OVERRIDE=Object.assign({}, s.colors);
   if(s.palette){ PALETTE=s.palette.slice(); renderPalette(); }
   if(s.merge){ const m=document.getElementById("mON"),b=document.getElementById("bON"),c=document.getElementById("cON");
@@ -1641,7 +1647,8 @@ document.getElementById("q").addEventListener("input",e=>{
   cy.nodes("[!is_cell]").forEach(n=>{ const hay=`${n.data("gp")} ${n.data("mf")} ${n.data("bp")} ${n.data("cc")} ${(n.data("models")||[]).join(" ")}`.toLowerCase();
     if(!hay.includes(q)) n.addClass("faded"); else n.addClass("hi"); });
 });
-document.getElementById("colorBy").addEventListener("change",e=>{ colorBy=e.target.value; applyColors(); });
+function showSchemeLegend(){ document.querySelectorAll(".schemeleg").forEach(d=>d.style.display = d.dataset.s===colorBy ? "" : "none"); }
+document.getElementById("colorBy").addEventListener("change",e=>{ colorBy=e.target.value; applyColors(); showSchemeLegend(); });
 document.getElementById("clearcol").addEventListener("click",clearAllOverrides);
 document.getElementById("palAddBtn").addEventListener("click",()=>{ pushHistory(); addToPalette(document.getElementById("palAdd").value); });
 document.getElementById("undo").addEventListener("click",undo);
@@ -1674,6 +1681,7 @@ makeResizer("rzL","left","left");
 makeResizer("rzR","side","right");
 
 document.getElementById("colorBy").value = colorBy;   // reflect baked-in default scheme
+showSchemeLegend();
 renderPalette();
 renderCacheList([]);
 
