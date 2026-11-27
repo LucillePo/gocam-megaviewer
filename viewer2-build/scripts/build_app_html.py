@@ -1521,7 +1521,7 @@ document.getElementById("png").onclick=()=>{
         +'<div style="margin-bottom:8px"><a class="primary" href="'+url+'" download="'+name+'" style="display:inline-block;padding:6px 12px;background:#2a6ef0;color:#fff;border-radius:6px;text-decoration:none">&#11015; Download PNG</a> '
         +'<span class="sub">'+cv.width+' &times; '+cv.height+' px, '+(blob.size/1e6).toFixed(1)+' MB</span></div>'
         // opened from JupyterLab: the file server sends "sandbox allow-scripts", the browser then blocks downloads (user 2026-11-27)
-        +((window.origin==="null")
+        +((window.origin==="null" && location.protocol!=="file:")
           ? '<div style="margin:0 0 8px;padding:6px 8px;background:#fff4e5;border:1px solid #f0c27a;border-radius:6px;font-size:13px">'
             +'<b>Download is blocked in this tab</b>: this copy is opened from JupyterLab, which sandboxes HTML files. '
             +'Right-click the image below &rarr; <b>Save image as&hellip;</b>, or use the public page '

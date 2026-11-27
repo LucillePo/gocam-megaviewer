@@ -3906,7 +3906,7 @@ function stubFalse(){return false}module.exports=stubFalse},{}],279:[function(re
 <body>
 <div id="app">
   <div id="left"><div class="pad">
-    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 10:27</span></h1>
+    <h1>GO-CAM connectivity — Viewer 2 <span class="sub" style="font-weight:normal" title="when this app.html was built (models baked live at that time)">build 2026-11-27 11:16</span></h1>
     <div class="sub">Enter any GO-CAM model IDs (one per line), then Build — models are fetched live from GO. Drag boxes to arrange. Move several at once: Shift/Ctrl/Cmd-click them (or Shift-drag a rectangle on the background), then drag one; Esc or a click on the background clears the selection.</div>
     <h2>Model IDs</h2>
     <textarea id="ids" placeholder="Enter GO-CAM model IDs, one per line — e.g. gomodel:6918f23700000035 — then click Build graph"></textarea>
@@ -5372,7 +5372,7 @@ document.getElementById("png").onclick=()=>{
         +'<div style="margin-bottom:8px"><a class="primary" href="'+url+'" download="'+name+'" style="display:inline-block;padding:6px 12px;background:#2a6ef0;color:#fff;border-radius:6px;text-decoration:none">&#11015; Download PNG</a> '
         +'<span class="sub">'+cv.width+' &times; '+cv.height+' px, '+(blob.size/1e6).toFixed(1)+' MB</span></div>'
         // opened from JupyterLab: the file server sends "sandbox allow-scripts", the browser then blocks downloads (user 2026-11-27)
-        +((window.origin==="null")
+        +((window.origin==="null" && location.protocol!=="file:")
           ? '<div style="margin:0 0 8px;padding:6px 8px;background:#fff4e5;border:1px solid #f0c27a;border-radius:6px;font-size:13px">'
             +'<b>Download is blocked in this tab</b>: this copy is opened from JupyterLab, which sandboxes HTML files. '
             +'Right-click the image below &rarr; <b>Save image as&hellip;</b>, or use the public page '
